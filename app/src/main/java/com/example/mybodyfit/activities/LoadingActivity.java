@@ -24,8 +24,8 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 //        todo remove it after it works
-        UserEatenFoodInADay.init(this);
-        UserEatenFoodInADay.getInstance().deleteAll();
+//        UserEatenFoodInADay.init(this);
+//        UserEatenFoodInADay.getInstance().deleteAll();
         bar = findViewById(R.id.loading);
         textView = findViewById(R.id.loading_txt);
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));

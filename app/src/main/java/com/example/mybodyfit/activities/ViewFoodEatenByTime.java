@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -111,6 +112,7 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
 
     public void setAdapter() {
         ViewFoodRecyclerViewAdapter adapter = new ViewFoodRecyclerViewAdapter(foodStats, ((v, position) -> {
+           popUpDeleteFood(v, foodStats.get(position).getName());
         }));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -334,5 +336,19 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void popUpDeleteFood(View v, String foodToDelete) {
+        Toast.makeText(this, "nigga", Toast.LENGTH_SHORT).show();
+        PopupMenu popUp = new PopupMenu(ViewFoodEatenByTime.this, v);
+//        popUp.setOnMenuItemClickListener(item -> {
+//            if (item.getItemId() == R.id.delete) {
+//                db.deleteFood(foodToDelete);
+//                return true;
+//            }
+//            return false;
+//        });
+        popUp.inflate(R.menu.pop_up_delete);
+        popUp.show();
     }
 }

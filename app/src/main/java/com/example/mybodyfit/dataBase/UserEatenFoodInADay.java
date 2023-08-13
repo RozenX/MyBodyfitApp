@@ -126,4 +126,10 @@ public class UserEatenFoodInADay extends SQLiteOpenHelper {
         String query = "DELETE FROM " + FOOD_TABLE;
         db.execSQL(query);
     }
+
+    public void deleteFood(String foodName) {
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "DELETE FROM " + FOOD_TABLE + " WHERE " + FOOD_NAME +"=" + foodName +";";
+        db.execSQL(query);
+    }
 }

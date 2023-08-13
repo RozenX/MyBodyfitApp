@@ -3,6 +3,7 @@ package com.example.mybodyfit.struct.recyclerview_adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ public class ViewFoodRecyclerViewAdapter extends RecyclerView.Adapter<ViewFoodRe
         private final TextView amount;
         private final TextView scalingUnit;
         private final TextView calories;
+        private final Button deleteBtn;
 
         public MyViewFoodViewHolder(final View v) {
             super(v);
@@ -36,7 +38,7 @@ public class ViewFoodRecyclerViewAdapter extends RecyclerView.Adapter<ViewFoodRe
             amount = v.findViewById(R.id.amount);
             scalingUnit = v.findViewById(R.id.scaling_unit);
             calories = v.findViewById(R.id.calories_view);
-            v.setOnClickListener(this);
+            deleteBtn = v.findViewById(R.id.delete_btn);
         }
 
         @Override
@@ -61,11 +63,12 @@ public class ViewFoodRecyclerViewAdapter extends RecyclerView.Adapter<ViewFoodRe
         holder.foodName.setText(name);
         holder.calories.setText(calories);
         holder.amount.setText(amount);
+        holder.deleteBtn.setOnClickListener(v -> listener.onClick(v, position));
     }
 
     @Override
     public int getItemCount() {
         return list.size();
     }
-
 }
+
