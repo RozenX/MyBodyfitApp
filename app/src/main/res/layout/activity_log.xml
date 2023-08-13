@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:elevation="10dp"
-    tools:context=".activities.Log">
+    tools:context="com.example.mybodyfit.activities.Log">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
