@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ViewFoodEatenByTime">
+    tools:context="com.example.mybodyfit.activities.ViewFoodEatenByTime">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/food_eaten_recycler_view"

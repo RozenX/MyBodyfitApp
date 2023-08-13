@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.Recipes">
+    tools:context="com.example.mybodyfit.activities.Recipes">
 
 
     <androidx.recyclerview.widget.RecyclerView

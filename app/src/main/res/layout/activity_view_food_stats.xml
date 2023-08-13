@@ -5,7 +5,7 @@
     android:id="@+id/mealTime"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ViewFoodStats">
+    tools:context="com.example.mybodyfit.activities.ViewFoodStats">
 
     <TextView
         android:id="@+id/food_view_name"

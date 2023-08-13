@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutDescription="@xml/activity_loading_scene2"
-    tools:context=".activities.LoadingActivity"
+    tools:context="com.example.mybodyfit.activities.LoadingActivity"
     android:background="#4B2C66">
 
     <androidx.constraintlayout.widget.ConstraintLayout
