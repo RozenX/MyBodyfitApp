@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingLeanbackLauncher">
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyBody"
+        tools:targetApi="31">
+        <activity
+            android:name="com.example.mybodyfit.activities.Instructions"
+            android:exported="false" />
+        <activity
+            android:name="com.example.mybodyfit.activities.settingsActivities.SetGoals"
+            android:exported="false" />
+        <activity
+            android:name="com.example.mybodyfit.activities.settingsActivities.TrackSteps"
+            android:exported="false" />
+        <activity
+            android:name="com.example.mybodyfit.activities.settingsActivities.SetNotifications"
+            android:exported="false" />
+        <activity
+            android:name="com.example.mybodyfit.activities.settingsActivities.Profile"
+            android:exported="false" />
+        <activity
+            android:name="com.example.mybodyfit.activities.ViewFoodStats"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.mybodyfit.activities.Recipes"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.mybodyfit.activities.ViewFoodEatenByTime"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:parentActivityName="com.example.mybodyfit.activities.Log"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.mybodyfit.activities.Register"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:noHistory="true"
+            android:parentActivityName="com.example.mybodyfit.activities.LogIn"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.mybodyfit.activities.LogIn"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.mybodyfit.activities.AddFoods"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.mybodyfit.activities.Home"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.mybodyfit.activities.Settings"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:label="@string/title_activity_settings"
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.mybodyfit.activities.Log"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:label="@string/title_activity_log"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name="com.example.mybodyfit.activities.LoadingActivity"
+            android:configChanges="orientation"
+            android:exported="true"
+            android:noHistory="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

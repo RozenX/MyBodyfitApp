@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An white rectangle ripple. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#C1C1C1">
+    <item
+        android:id="@android:id/mask"
+        android:gravity="center">
+        <shape android:shape="rectangle">
+            <corners android:bottomRightRadius="8dp"
+                android:bottomLeftRadius="8dp"
+                android:topRightRadius="8dp"
+                android:topLeftRadius="8dp"/>
+            <solid android:color="#C1C1C1"/>
+        </shape>
+    </item>
+</ripple>
