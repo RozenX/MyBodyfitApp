@@ -24,7 +24,7 @@ public class RecipesRecyclerViewAdapter extends RecyclerView.Adapter<RecipesRecy
 
     public RecipesRecyclerViewAdapter(ArrayList<Recipe> list, RecyclerViewListener listener) {
         this.list = list;
-        ViewFoodRecyclerViewAdapter.listener = listener;
+        RecipesRecyclerViewAdapter.listener = listener;
     }
 
     public static class MyViewRecipesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -100,6 +100,7 @@ public class Recipes extends AppCompatActivity {
                 bundle.putSerializable("steps", response.recipes.get(pos).analyzedInstructions);
                 bundle.putSerializable("needed", response.recipes.get(pos).extendedIngredients);
                 Toast.makeText(Recipes.this, "i was pressed", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), Instructions.class));
             }));
             ProgressHelper.setDialogToSleep(true);
         }

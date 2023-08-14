@@ -20,7 +20,7 @@ public class RecipeRecyclerViewInstructionsAdapter extends RecyclerView.Adapter<
 
     public RecipeRecyclerViewInstructionsAdapter(ArrayList<AnalyzedInstruction> list, RecyclerViewListener listener) {
         this.list = list;
-        SearchResultRecyclerViewAdapter.listener = listener;
+        RecipeRecyclerViewInstructionsAdapter.listener = listener;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
