@@ -1,5 +1,6 @@
 package com.example.mybodyfit.struct.recyclerview_adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class ViewFoodRecyclerViewAdapter extends RecyclerView.Adapter<ViewFoodRe
         return new MyViewFoodViewHolder(view);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull MyViewFoodViewHolder holder, int position) {
         String name = list.get(position).getName();
@@ -63,7 +65,10 @@ public class ViewFoodRecyclerViewAdapter extends RecyclerView.Adapter<ViewFoodRe
         holder.foodName.setText(name);
         holder.calories.setText(calories);
         holder.amount.setText(amount);
-        holder.deleteBtn.setOnClickListener(v -> listener.onClick(v, position));
+        holder.deleteBtn.setOnClickListener(v -> {
+            listener.onClick(v, position);
+            notifyDataSetChanged();
+        });
     }
 
     @Override

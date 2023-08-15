@@ -3,6 +3,7 @@ package com.example.mybodyfit.dataBase;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -60,15 +61,16 @@ public class UserEatenFoodInADay extends SQLiteOpenHelper {
         cv.put(AMOUNT, food.getAmount());
 
         long insert = db.insert(FOOD_TABLE, null, cv);
+        db.close();
         return insert != -1;
     }
 
     public ArrayList<FoodModel> pullFoods(int meal) {
         ArrayList<FoodModel> foods = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + FOOD_TABLE + " WHERE MEAL_TIME =" + meal + ";";
+        String query = "SELECT * FROM " + FOOD_TABLE + " WHERE MEAL_TIME =" + "?" + ";";
 
-        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(query, null);
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery(query, new String[]{Integer.toString(meal)});
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(FOOD_NAME));
@@ -89,6 +91,7 @@ public class UserEatenFoodInADay extends SQLiteOpenHelper {
                 cursor.moveToNext();
             }
         }
+        db.close();
         return foods;
     }
 
@@ -118,6 +121,7 @@ public class UserEatenFoodInADay extends SQLiteOpenHelper {
                 cursor.moveToNext();
             }
         }
+        db.close();
         return foods;
     }
 
@@ -125,11 +129,13 @@ public class UserEatenFoodInADay extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         String query = "DELETE FROM " + FOOD_TABLE;
         db.execSQL(query);
+        db.close();
     }
 
     public void deleteFood(String foodName) {
         SQLiteDatabase db = getWritableDatabase();
-        String query = "DELETE FROM " + FOOD_TABLE + " WHERE " + FOOD_NAME +"=" + foodName +";";
-        db.execSQL(query);
+        String query = "DELETE FROM " + FOOD_TABLE + " WHERE FOOD_NAME = ?";
+        db.execSQL(query, new String[]{foodName});
+        db.close();
     }
 }

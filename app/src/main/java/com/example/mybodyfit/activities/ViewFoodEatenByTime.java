@@ -217,9 +217,13 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
         public void didFetch(SearchFoodApiResponse response, String msg) {
             searchRecyclerView.setHasFixedSize(true);
             searchRecyclerView.setLayoutManager(new GridLayoutManager(ViewFoodEatenByTime.this, 1));
+            searchRecyclerView.setVisibility(View.VISIBLE);
             if (toSearch) {
                 ViewFoodEatenByTime.response = response;
                 setSearchAdapter();
+            }
+            if (response.results.isEmpty()) {
+                searchRecyclerView.setVisibility(View.GONE);
             }
         }
 
@@ -339,15 +343,17 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
     }
 
     public void popUpDeleteFood(View v, String foodToDelete) {
-        Toast.makeText(this, "nigga", Toast.LENGTH_SHORT).show();
         PopupMenu popUp = new PopupMenu(ViewFoodEatenByTime.this, v);
-//        popUp.setOnMenuItemClickListener(item -> {
-//            if (item.getItemId() == R.id.delete) {
-//                db.deleteFood(foodToDelete);
-//                return true;
-//            }
-//            return false;
-//        });
+        popUp.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.delete) {
+                db.deleteFood(foodToDelete);
+                foodStats.clear();
+                foodStats = new ArrayList<>(db.pullFoods(mealTime));
+                setAdapter();
+                return true;
+            }
+            return false;
+        });
         popUp.inflate(R.menu.pop_up_delete);
         popUp.show();
     }
