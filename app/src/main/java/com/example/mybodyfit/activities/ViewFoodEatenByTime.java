@@ -100,7 +100,7 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
         }
         adapter = new ArrayAdapter<>(ViewFoodEatenByTime.this,
                 android.R.layout.simple_spinner_item,
-                AppConstants.FoodViewSpinnerListConst.getListAdapter(mealTime));
+                AppConstants.FoodViewSpinnerListConst.getListAdapter());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         meals.setAdapter(adapter);
         foodStats = new ArrayList<>(db.pullFoods(mealTime));

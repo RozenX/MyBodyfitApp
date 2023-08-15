@@ -2,6 +2,7 @@ package com.example.mybodyfit.activities.settingsActivities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.constants.AppConstants;
+
+import java.util.Objects;
 
 public class SetGoals extends AppCompatActivity {
 
@@ -32,6 +35,8 @@ public class SetGoals extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_goals);
+        getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         caloricGoal = findViewById(R.id.set_caloric_goal);
         protein = findViewById(R.id.proteinNumPicker);
         carbs = findViewById(R.id.carbNumPicker);

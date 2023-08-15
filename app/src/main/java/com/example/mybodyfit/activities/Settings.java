@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.activities.settingsActivities.SetGoals;
+import com.example.mybodyfit.activities.settingsActivities.TrackSteps;
 import com.example.mybodyfit.struct.MenuThread;
 import com.example.mybodyfit.struct.SettingsAttributes;
 import com.example.mybodyfit.struct.recyclerview_adapters.SettingsRecyclerViewAdapter;
@@ -74,6 +75,10 @@ public class Settings extends AppCompatActivity {
             }
             if (settable.get(position).getType().equals("Set Goals")) {
                 Intent intent = new Intent(Settings.this, SetGoals.class);
+                startActivity(intent);
+            }
+            if (settable.get(position).getType().equals("Track steps")) {
+                Intent intent = new Intent(Settings.this, TrackSteps.class);
                 startActivity(intent);
             }
         }));
