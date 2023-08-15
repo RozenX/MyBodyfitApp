@@ -20,9 +20,11 @@ import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.struct.FoodModel;
 import com.example.mybodyfit.struct.MenuThread;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -79,6 +81,22 @@ public class Home extends AppCompatActivity {
     public void graphJourney() {
         LineChart lineChart = (LineChart) findViewById(R.id.weightChart);
         lineChart.getXAxis().setTextColor(Color.WHITE);
+        lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(
+                new String[]{
+                        "week 1",
+                        "week 2",
+                        "week 3",
+                        "week 4",
+                        "week 5",
+                        "week 6",
+                        "week 7",
+                        "week 8"}));
+        lineChart.getAxisLeft().setTextColor(Color.WHITE);
+        lineChart.getAxisRight().setEnabled(false);
+        lineChart.getDescription().setTextColor(Color.WHITE);
+        lineChart.getDescription().setText("weight journey");
+        lineChart.getLegend().setTextColor(Color.WHITE);
         ArrayList<Entry> weights = new ArrayList<>();
         float weight = 70;
         for (int i = 0; i < 8; i++) {
@@ -88,14 +106,14 @@ public class Home extends AppCompatActivity {
 
         LineDataSet lineDataSet = new LineDataSet(weights, "weight journey");
         lineDataSet.setDrawCircles(false);
-        lineDataSet.setColor(Color.DKGRAY);
+        lineDataSet.setColor(Color.parseColor("#D69E10"));
 
         lineChart.setData(new LineData(lineDataSet));
         lineChart.setVisibleXRangeMaximum(10f);
         lineChart.setBackgroundColor(Color.parseColor("#181818"));
-        lineChart.setBorderColor(Color.DKGRAY);
-        lineChart.setNoDataTextColor(Color.DKGRAY);
-        lineChart.setGridBackgroundColor(Color.DKGRAY);
+        lineChart.setBorderColor(Color.WHITE);
+        lineChart.setNoDataTextColor(Color.WHITE);
+        lineChart.setGridBackgroundColor(Color.WHITE);
         manageNavigation();
     }
 
