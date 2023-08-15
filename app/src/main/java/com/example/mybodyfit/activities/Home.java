@@ -103,11 +103,9 @@ public class Home extends AppCompatActivity {
             weights.add(new Entry(i, weight));
             weight = (float) calcWeeklyWeight(weight, 1500, 1000);
         }
-
         LineDataSet lineDataSet = new LineDataSet(weights, "weight journey");
         lineDataSet.setDrawCircles(false);
         lineDataSet.setColor(Color.parseColor("#D69E10"));
-
         lineChart.setData(new LineData(lineDataSet));
         lineChart.setVisibleXRangeMaximum(10f);
         lineChart.setBackgroundColor(Color.parseColor("#181818"));
