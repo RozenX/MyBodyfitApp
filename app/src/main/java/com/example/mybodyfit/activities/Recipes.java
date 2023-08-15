@@ -5,6 +5,8 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,15 +20,23 @@ import com.example.mybodyfit.struct.Listeners.RandomRecipeResponseListener;
 import com.example.mybodyfit.struct.MenuThread;
 import com.example.mybodyfit.struct.ProgressHelper;
 import com.example.mybodyfit.struct.models.randomRecipes.RandomRecipeApiResponse;
+import com.example.mybodyfit.struct.models.randomRecipes.Recipe;
 import com.example.mybodyfit.struct.recyclerview_adapters.RecipesRecyclerViewAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Recipes extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private BottomNavigationView bnv;
     private FloatingActionButton fab;
+    private ArrayList<Recipe> rec;
+    private Intent intent;
+    private boolean isPressed = false;
+    private boolean didReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +46,7 @@ public class Recipes extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
         ProgressHelper.showDialog(this, "loading...");
-
+        intent = new Intent(getApplicationContext(), Instructions.class);
         RequestManger manger = new RequestManger(this);
         manger.getRandomRecipes(listener);
 
@@ -95,19 +105,33 @@ public class Recipes extends AppCompatActivity {
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new GridLayoutManager(Recipes.this, 1));
             recyclerView.setAdapter(new RecipesRecyclerViewAdapter(response.recipes, (view, pos) -> {
+                isPressed = true;
+                rec = response.recipes;
                 Bundle bundle = new Bundle();
-                bundle.putString("recipeName", response.recipes.get(pos).sourceName);
-                bundle.putSerializable("steps", response.recipes.get(pos).analyzedInstructions);
-                bundle.putSerializable("needed", response.recipes.get(pos).extendedIngredients);
-                Toast.makeText(Recipes.this, "i was pressed", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), Instructions.class));
+                if (isReady(pos)) {
+                    bundle.putString("recipeName", response.recipes.get(pos).title);
+                    bundle.putSerializable("steps", (Serializable) response.recipes.get(pos).analyzedInstructions);
+                    bundle.putSerializable("needed", (Serializable) response.recipes.get(pos).extendedIngredients);
+                    intent.putExtras(bundle);
+                    didReady = true;
+                    goToInstructions();
+                }
             }));
             ProgressHelper.setDialogToSleep(true);
         }
 
+        public void goToInstructions() {
+            if (didReady) {
+                startActivity(intent);
+            }
+        }
+
         @Override
         public void didError(String msg) {
-
         }
     };
+
+    public boolean isReady(int pos) {
+        return !rec.get(pos).sourceName.equals("") && rec.get(pos).analyzedInstructions != null && rec.get(pos).extendedIngredients != null;
+    }
 }

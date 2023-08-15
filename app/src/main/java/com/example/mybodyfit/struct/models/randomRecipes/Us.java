@@ -1,6 +1,8 @@
 package com.example.mybodyfit.struct.models.randomRecipes;
 
-public class Us {
+import java.io.Serializable;
+
+public class Us implements Serializable {
 
     public double amount;
     public String unitShort;

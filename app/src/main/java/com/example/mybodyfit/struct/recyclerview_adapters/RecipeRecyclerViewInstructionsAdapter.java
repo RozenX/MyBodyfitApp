@@ -50,7 +50,7 @@ public class RecipeRecyclerViewInstructionsAdapter extends RecyclerView.Adapter<
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.step.setText(list.get(position).steps.get(position).number);
+        holder.step.setText(String.valueOf(list.get(position).steps.get(position).number));
         holder.instruction.setText(list.get(position).steps.get(position).step);
     }
 
