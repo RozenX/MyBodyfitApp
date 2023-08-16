@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
-import com.example.mybodyfit.dataBase.FireBaseConnection;
+import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.example.mybodyfit.struct.User;
 import com.google.firebase.auth.FirebaseAuth;
 

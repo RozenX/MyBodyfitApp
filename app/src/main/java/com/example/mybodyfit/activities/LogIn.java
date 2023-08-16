@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
-import com.example.mybodyfit.dataBase.FireBaseConnection;
+import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 
 public class LogIn extends AppCompatActivity {
 

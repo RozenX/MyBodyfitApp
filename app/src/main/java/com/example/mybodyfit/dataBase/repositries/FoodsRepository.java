@@ -15,8 +15,8 @@ import java.util.concurrent.ExecutionException;
 
 public class FoodsRepository {
 
-    private FoodDao foodDao;
-    private LiveData<List<Foods>> allFoods;
+    private final FoodDao foodDao;
+    private final LiveData<List<Foods>> allFoods;
 
     public FoodsRepository(Application app) {
         MyBodyDatabase database = MyBodyDatabase.getInstance(app);

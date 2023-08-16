@@ -1,8 +1,9 @@
-package com.example.mybodyfit.dataBase;
+package com.example.mybodyfit.dataBase.firebase;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
