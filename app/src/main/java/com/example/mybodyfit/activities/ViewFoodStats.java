@@ -14,9 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
+import com.example.mybodyfit.dataBase.entities.Foods;
+import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
+import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
 import com.example.mybodyfit.struct.MenuThread;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -28,7 +32,6 @@ public class ViewFoodStats extends AppCompatActivity {
     private int mealTime;
     private BottomNavigationView bnv;
     private FloatingActionButton fab;
-    private UserEatenFoodInADay db;
     private TextView foodName;
     private TextView calories;
     private TextView protein;
@@ -39,6 +42,7 @@ public class ViewFoodStats extends AppCompatActivity {
     private Button addBtn;
     private Button pop;
     private String mealTimeTxt;
+    private FoodViewModel viewModel;
     double calories_;
     double protein_;
     double carbs_;
@@ -60,10 +64,9 @@ public class ViewFoodStats extends AppCompatActivity {
         showBtn = findViewById(R.id.show_btn);
         addBtn = findViewById(R.id.add_food_btn);
         pop = findViewById(R.id.meal_time_btn);
-        UserEatenFoodInADay.init(ViewFoodStats.this);
-        db = UserEatenFoodInADay.getInstance();
         foodName.setText(getIntent().getStringExtra("name"));
         pop.setOnClickListener(this::showPopUp);
+        viewModel = new ViewModelProvider(this).get(FoodViewModel.class);
         setStats();
         setStatsBasedOnGrams();
         addFoodsToUser();
@@ -184,20 +187,19 @@ public class ViewFoodStats extends AppCompatActivity {
         } else {
             amount = "1";
         }
-        boolean isSuccessful;
+        boolean isSuccessful = true;
         if (mealTime == 0) {
             Toast.makeText(this, "meal time field is empty", Toast.LENGTH_SHORT).show();
         } else {
-                isSuccessful = db.addFood(new FoodModel(foodName.getText().toString(),
-                        Double.parseDouble(calories.getText().toString()),
-                        Double.parseDouble(protein.getText().toString()),
-                        Double.parseDouble(carbs.getText().toString()),
-                        Double.parseDouble(fats.getText().toString()),
-                        mealTime).setAmount(Double.parseDouble(amount)));
+            try {
+                viewModel.insert(new Foods(foodName.getText().toString(), calories_ * Double.parseDouble(amount), protein_, carbs_, fats_, mealTime, Double.parseDouble(amount), CurrentDate.getDateWithoutTimeUsingCalendar()));
+            } catch (Exception e) {
+                isSuccessful = false;
+            }
             if (isSuccessful) {
                 Toast.makeText(this, "food was added :)", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "something is fucked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "something went wrong", Toast.LENGTH_SHORT).show();
             }
         }
     }

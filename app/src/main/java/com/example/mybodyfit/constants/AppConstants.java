@@ -1,5 +1,10 @@
 package com.example.mybodyfit.constants;
 
+import com.example.mybodyfit.struct.FoodModel;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class AppConstants {
 
     public static class Weight {
@@ -27,10 +32,22 @@ public class AppConstants {
     public static class FoodViewSpinnerListConst {
 
         private static final String[] breakfast = {"Breakfast", "Lunch", "Dinner", "Snacks"};
+        private static final String[] lunch = {"Lunch", "Breakfast", "Dinner", "Snacks"};
+        private static final String[] dinner = {"Dinner", "Breakfast", "Lunch", "Snacks"};
+        private static final String[] snacks = {"Snacks", "Breakfast", "Lunch", "Dinner"};
 
-        public static String[] getListAdapter() {
-
-            return breakfast;
+        public static ArrayList<CharSequence> getListAdapter(int meal) {
+            ArrayList<CharSequence> meals = new ArrayList<>();
+            if (meal == FoodModel.BREAKFAST) {
+                meals.addAll(Arrays.asList(breakfast));
+            } else if (meal == FoodModel.LUNCH) {
+                meals.addAll(Arrays.asList(lunch));
+            } else if (meal == FoodModel.DINNER) {
+                meals.addAll(Arrays.asList(dinner));
+            } else if (meal == FoodModel.SNACK) {
+                meals.addAll(Arrays.asList(snacks));
+            }
+            return meals;
         }
     }
 }

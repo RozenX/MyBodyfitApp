@@ -7,15 +7,37 @@ android {
     buildFeatures {
         dataBinding = true
         viewBinding = true
+        applicationVariants.all {
+            // Return compile configuration objects of a variant.
+            compileConfiguration.resolutionStrategy {
+                // Use Gradle's ResolutionStrategy API
+                // to customize how this variant resolves dependencies.
+
+            }
+            // Return runtime configuration objects of a variant.
+            runtimeConfiguration.resolutionStrategy {
+
+            }
+            // Return annotation processor configuration of a variant.
+            annotationProcessorConfiguration.resolutionStrategy {
+
+            }
+        }
+        dependenciesInfo {
+            // Disables dependency metadata when building APKs.
+            includeInApk = false
+            // Disables dependency metadata when building Android App Bundles.
+            includeInBundle = false
+        }
     }
 
     namespace 'com.example.mybody'
-    compileSdk 34
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.mybody"
         minSdk 28
-        targetSdk 34
+        targetSdk 33
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -35,6 +57,8 @@ android {
 }
 
 dependencies {
+    def lifecycle_version = "2.6.1"
+    def room_version = "2.5.2"
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -58,7 +82,13 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.volley:volley:1.2.1'
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.9.0'
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
     implementation("com.google.firebase:firebase-auth")
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 }

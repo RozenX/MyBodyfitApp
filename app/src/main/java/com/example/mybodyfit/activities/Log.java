@@ -6,14 +6,20 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
+import com.example.mybodyfit.dataBase.entities.Foods;
+import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
+import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
 import com.example.mybodyfit.struct.LogAttributes;
 import com.example.mybodyfit.struct.MenuThread;
@@ -23,6 +29,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Log extends AppCompatActivity {
 
@@ -30,11 +37,11 @@ public class Log extends AppCompatActivity {
     private FloatingActionButton fab;
     private RecyclerView recyclerView;
     private Intent intent;
-    private UserEatenFoodInADay db;
     private ArrayList<LogAttributes> loggable;
     private TextView caloriesEaten;
     private TextView caloriesLeft;
     private TextView caloricGoal;
+    private FoodViewModel viewModel;
 
 
     public Log() {
@@ -54,9 +61,8 @@ public class Log extends AppCompatActivity {
         caloriesEaten = findViewById(R.id.calories_eaten);
         caloriesLeft = findViewById(R.id.calories_left);
         caloricGoal = findViewById(R.id.caloric_goal);
-        UserEatenFoodInADay.init(this);
-        db = UserEatenFoodInADay.getInstance();
 
+        viewModel = new ViewModelProvider(this).get(FoodViewModel.class);
         addLogs();
         setAdapter();
         calculateCurrentCalories();
@@ -190,20 +196,23 @@ public class Log extends AppCompatActivity {
 
     public int[] sumCalories() {
         int[] calories = new int[4];
-        ArrayList<FoodModel> breakfast = new ArrayList<>(db.pullFoods(FoodModel.BREAKFAST));
-        ArrayList<FoodModel> lunch = new ArrayList<>(db.pullFoods(FoodModel.LUNCH));
-        ArrayList<FoodModel> dinner = new ArrayList<>(db.pullFoods(FoodModel.DINNER));
-        ArrayList<FoodModel> snacks = new ArrayList<>(db.pullFoods(FoodModel.SNACK));
+        List<Foods> breakfast = viewModel.pullByMealAndDateData(FoodModel.BREAKFAST, CurrentDate.getDateWithoutTimeUsingCalendar());
+        List<Foods> lunch = viewModel.pullByMealAndDateData(FoodModel.LUNCH, CurrentDate.getDateWithoutTimeUsingCalendar());
+        List<Foods> dinner = viewModel.pullByMealAndDateData(FoodModel.DINNER, CurrentDate.getDateWithoutTimeUsingCalendar());
+        List<Foods> snacks = viewModel.pullByMealAndDateData(FoodModel.SNACK, CurrentDate.getDateWithoutTimeUsingCalendar());
 
         for (int i = 0; i < breakfast.size(); i++) {
             calories[0] += breakfast.get(i).getCalories();
         }
+
         for (int i = 0; i < lunch.size(); i++) {
             calories[1] += lunch.get(i).getCalories();
         }
+
         for (int i = 0; i < dinner.size(); i++) {
             calories[2] += dinner.get(i).getCalories();
         }
+
         for (int i = 0; i < snacks.size(); i++) {
             calories[3] += snacks.get(i).getCalories();
         }

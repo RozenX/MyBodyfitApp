@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,7 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mybody.R;
 import com.example.mybodyfit.constants.AppConstants;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
+import com.example.mybodyfit.dataBase.entities.Foods;
+import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
 import com.example.mybodyfit.spoonacular.RequestManger;
+import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
 import com.example.mybodyfit.struct.FoodViewAttributes;
 import com.example.mybodyfit.struct.Listeners.FoodNameResponseListener;
@@ -41,6 +46,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ViewFoodEatenByTime extends AppCompatActivity {
@@ -51,20 +57,18 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
     private FloatingActionButton fab;
     private Spinner meals;
     private RecyclerView recyclerView;
-    private ArrayList<FoodViewAttributes> foods;
     private SearchView searchEngine;
     boolean didFetch = false;
     private ArrayList<Result> res;
     private Bundle bundle;
     private String foodName;
     private Intent in;
-    private ArrayList<FoodModel> foodStats;
-    private ArrayList<FoodModel> relevant;
     private RecyclerView searchRecyclerView;
     private RequestManger manger;
-    private UserEatenFoodInADay db;
+    private FoodViewModel viewModel;
     int mealTime;
     private ArrayAdapter<CharSequence> adapter;
+    private ViewFoodRecyclerViewAdapter foodsAdapter;
     String mealTimeTxt;
 
     @Override
@@ -73,11 +77,7 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
         setContentView(R.layout.activity_view_food_eaten_by_time);
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        UserEatenFoodInADay.init(this);
-        db = UserEatenFoodInADay.getInstance();
-
-        foods = new ArrayList<>();
-        relevant = new ArrayList<>();
+        viewModel = new ViewModelProvider(this).get(FoodViewModel.class);
         bnv = findViewById(R.id.bottomNavigationView);
         bnv.setSelectedItemId(R.id.log);
         fab = findViewById(R.id.fab);
@@ -100,24 +100,27 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
         }
         adapter = new ArrayAdapter<>(ViewFoodEatenByTime.this,
                 android.R.layout.simple_spinner_item,
-                AppConstants.FoodViewSpinnerListConst.getListAdapter());
+                AppConstants.FoodViewSpinnerListConst.getListAdapter(mealTime));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         meals.setAdapter(adapter);
-        foodStats = new ArrayList<>(db.pullFoods(mealTime));
+        foodsAdapter = new ViewFoodRecyclerViewAdapter(((v, position) -> {
+            popUpDeleteFood(v, foodsAdapter.getList().get(position));
+        }));
+
+        viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(this, foods -> {
+            setAdapter();
+            foodsAdapter.setFoods(foods);
+        });
         showPopUp();
-        setAdapter();
         MenuThread.init(this::manageNavigation);
         MenuThread.getInstance().start();
     }
 
     public void setAdapter() {
-        ViewFoodRecyclerViewAdapter adapter = new ViewFoodRecyclerViewAdapter(foodStats, ((v, position) -> {
-           popUpDeleteFood(v, foodStats.get(position).getName());
-        }));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(foodsAdapter);
     }
 
     public void addLogs() {
@@ -311,26 +314,30 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
                 ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
                 if (meal.equals("Breakfast")) {
                     mealTime = FoodModel.BREAKFAST;
-                    foodStats.clear();
-                    foodStats = new ArrayList<>(db.pullFoods(mealTime));
+                    viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
+                        foodsAdapter.setFoods(foods);
+                    });
                     setAdapter();
                 }
                 if (meal.equals("Lunch")) {
                     mealTime = FoodModel.LUNCH;
-                    foodStats.clear();
-                    foodStats = new ArrayList<>(db.pullFoods(mealTime));
+                    viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
+                        foodsAdapter.setFoods(foods);
+                    });
                     setAdapter();
                 }
                 if (meal.equals("Dinner")) {
                     mealTime = FoodModel.DINNER;
-                    foodStats.clear();
-                    foodStats = new ArrayList<>(db.pullFoods(mealTime));
-                    setAdapter();
+                    viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
+                        foodsAdapter.setFoods(foods);
+                    });
+
                 }
                 if (meal.equals("Snacks")) {
                     mealTime = FoodModel.SNACK;
-                    foodStats.clear();
-                    foodStats = new ArrayList<>(db.pullFoods(mealTime));
+                    viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
+                        foodsAdapter.setFoods(foods);
+                    });
                     setAdapter();
                 }
             }
@@ -342,13 +349,11 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
         });
     }
 
-    public void popUpDeleteFood(View v, String foodToDelete) {
+    public void popUpDeleteFood(View v, Foods food) {
         PopupMenu popUp = new PopupMenu(ViewFoodEatenByTime.this, v);
         popUp.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.delete) {
-                db.deleteFood(foodToDelete);
-                foodStats.clear();
-                foodStats = new ArrayList<>(db.pullFoods(mealTime));
+                viewModel.deleteByMeal(food);
                 setAdapter();
                 return true;
             }
