@@ -16,6 +16,7 @@ import com.example.mybodyfit.struct.FoodModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class ViewFoodRecyclerViewAdapter extends RecyclerView.Adapter<ViewFoodRecyclerViewAdapter.MyViewFoodViewHolder> {
 
@@ -69,6 +70,7 @@ public class ViewFoodRecyclerViewAdapter extends RecyclerView.Adapter<ViewFoodRe
         holder.amount.setText(amount);
         holder.deleteBtn.setOnClickListener(v -> {
             listener.onClick(v, position);
+            System.out.println("something went wrong");
             notifyDataSetChanged();
         });
     }
@@ -88,4 +90,3 @@ public class ViewFoodRecyclerViewAdapter extends RecyclerView.Adapter<ViewFoodRe
         return list;
     }
 }
-

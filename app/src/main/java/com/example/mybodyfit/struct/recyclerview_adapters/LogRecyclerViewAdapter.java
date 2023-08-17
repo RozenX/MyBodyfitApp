@@ -15,6 +15,7 @@ import com.example.mybody.R;
 import com.example.mybodyfit.struct.Attributes;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerViewAdapter.MyLogViewHolder> {
 
@@ -51,7 +52,8 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
 
         @Override
         public void onClick(View v) {
-            listener.onClick(v, getBindingAdapterPosition());
+                listener.onClick(v, getBindingAdapterPosition());
+                System.out.println("something went wrong");
         }
     }
 

@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybody.R;
-import com.example.mybodyfit.struct.models.searchFood.Result;
+import com.example.mybodyfit.struct.models.searchFoodFDC.Food;
 
 import java.util.ArrayList;
 
 public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<SearchResultRecyclerViewAdapter.MyViewHolder> {
 
-    private final ArrayList<Result> list;
+    private final ArrayList<Food> list;
     public static RecyclerViewListener listener;
 
-    public SearchResultRecyclerViewAdapter(ArrayList<Result> list, RecyclerViewListener listener) {
+    public SearchResultRecyclerViewAdapter(ArrayList<Food> list, RecyclerViewListener listener) {
         this.list = list;
         SearchResultRecyclerViewAdapter.listener = listener;
     }
@@ -46,7 +46,7 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-       holder.txt.setText(list.get(position).name);
+       holder.txt.setText(list.get(position).description);
     }
 
     @Override

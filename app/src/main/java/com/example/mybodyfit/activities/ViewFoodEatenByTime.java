@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -16,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -24,34 +24,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybody.R;
+import com.example.mybodyfit.api.ApiManger;
 import com.example.mybodyfit.constants.AppConstants;
-import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
-import com.example.mybodyfit.spoonacular.RequestManger;
 import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
-import com.example.mybodyfit.struct.FoodViewAttributes;
-import com.example.mybodyfit.struct.Listeners.FoodNameResponseListener;
-import com.example.mybodyfit.struct.Listeners.FoodNutrientsResponseListener;
+import com.example.mybodyfit.struct.Listeners.FdcFoodSearchResponseListener;
+import com.example.mybodyfit.struct.Listeners.FdcNutrientsResponseListener;
 import com.example.mybodyfit.struct.MenuThread;
 import com.example.mybodyfit.struct.ProgressHelper;
-import com.example.mybodyfit.struct.models.nutrients.FoodNutrientsApiResponseSP;
-import com.example.mybodyfit.struct.models.nutrients.Nutrient;
-import com.example.mybodyfit.struct.models.searchFood.Result;
-import com.example.mybodyfit.struct.models.searchFood.SearchFoodApiResponse;
+import com.example.mybodyfit.struct.models.nutrientsFDC.FdcFoodNutrientsApiResponse;
+import com.example.mybodyfit.struct.models.searchFoodFDC.FdcSearchApiResponse;
+import com.example.mybodyfit.struct.models.searchFoodFDC.Food;
 import com.example.mybodyfit.struct.recyclerview_adapters.SearchResultRecyclerViewAdapter;
 import com.example.mybodyfit.struct.recyclerview_adapters.ViewFoodRecyclerViewAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 public class ViewFoodEatenByTime extends AppCompatActivity {
 
-    static SearchFoodApiResponse response;
+    static FdcSearchApiResponse response;
     static boolean toSearch = false;
     private BottomNavigationView bnv;
     private FloatingActionButton fab;
@@ -59,12 +56,12 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SearchView searchEngine;
     boolean didFetch = false;
-    private ArrayList<Result> res;
+    private ArrayList<Food> res;
     private Bundle bundle;
     private String foodName;
     private Intent in;
     private RecyclerView searchRecyclerView;
-    private RequestManger manger;
+    private ApiManger manger;
     private FoodViewModel viewModel;
     int mealTime;
     private ArrayAdapter<CharSequence> adapter;
@@ -84,7 +81,7 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
         meals = findViewById(R.id.type_of_meal);
         recyclerView = findViewById(R.id.food_eaten_recycler_view);
         searchEngine = findViewById(R.id.search_engine);
-        manger = new RequestManger(this);
+        manger = new ApiManger(ViewFoodEatenByTime.this);
         searchRecyclerView = findViewById(R.id.search_recycler_view);
         in = new Intent(ViewFoodEatenByTime.this, ViewFoodStats.class);
         bundle = new Bundle();
@@ -134,10 +131,10 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 if (!query.equals("")) {
                     toSearch = true;
-                    manger.getFoods(listener, query);
+                    manger.searchFoods(listener, query);
                 } else {
                     toSearch = false;
-                    manger.getFoods(listener, "ליאור");
+                    manger.searchFoods(listener, "ליאור");
                 }
                 return false;
             }
@@ -146,61 +143,69 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if (searchEngine.isIconified()) {
                     toSearch = false;
-                    manger.getFoods(listener, "ליאור");
+                    manger.searchFoods(listener, "ליאור");
                 } else {
                     toSearch = true;
-                    manger.getFoods(listener, newText);
+                    manger.searchFoods(listener, newText);
                 }
                 return false;
             }
         });
         searchEngine.setOnCloseListener(() -> {
-            manger.getFoods(listener, "ליאור");
+            manger.searchFoods(listener, "ליאור");
             return false;
         });
     }
 
-    final FoodNutrientsResponseListener nutrientsListener = new FoodNutrientsResponseListener() {
-        @Override
-        public void didFetch(FoodNutrientsApiResponseSP response, String msg) {
-            setFoodName(response.name);
-            if (foodName.equals(response.name)) {
-                bundle.putString("name", foodName);
-                if (response.nutrition != null) {
-                    for (Nutrient nut : response.nutrition.nutrients) {
-                        System.out.println(nut.name);
-                        if (nut.name.equals("Calories")) {
-                            bundle.putString("calories", Double.toString(nut.amount));
-                        }
-                        if (nut.name.equals("Protein")) {
-                            bundle.putString("protein", Double.toString(nut.amount));
-                        }
-                        if (nut.name.equals("Carbohydrates")) {
-                            bundle.putString("carbs", Double.toString(nut.amount));
-                        }
-                        if (nut.name.equals("Fat")) {
-                            bundle.putString("fats", Double.toString(nut.amount));
-                        }
-                    }
-                }
-            } else {
-                Toast.makeText(ViewFoodEatenByTime.this, "I AM NULL", Toast.LENGTH_SHORT).show();
-            }
-            didFetch = true;
-            goToViewFood();
+
+    public static class GetNut extends AsyncTask<Void, Void, FdcNutrientsResponseListener> {
+
+        @SuppressLint("StaticFieldLeak")
+        private final ViewFoodEatenByTime viewFoodEatenByTime;
+        private FdcNutrientsResponseListener listener;
+
+        public GetNut(ViewFoodEatenByTime viewFoodEatenByTime) {
+            this.viewFoodEatenByTime = viewFoodEatenByTime;
         }
 
         @Override
-        public void didError(String msg) {
-            Toast.makeText(ViewFoodEatenByTime.this, "did something bad", Toast.LENGTH_SHORT).show();
+        protected FdcNutrientsResponseListener doInBackground(Void... voids) {
+            listener = new FdcNutrientsResponseListener() {
+                @Override
+                public void didFetch(FdcFoodNutrientsApiResponse response, String msg) {
+                    viewFoodEatenByTime.setFoodName(response.description);
+                    if (viewFoodEatenByTime.foodName.equals(response.description)) {
+                        viewFoodEatenByTime.bundle.putString("name", viewFoodEatenByTime.foodName);
+                        if (response.labelNutrients != null) {
+                            viewFoodEatenByTime.bundle.putString("calories", Double.toString(response.labelNutrients.calories.value));
+                            viewFoodEatenByTime.bundle.putString("protein", Double.toString(response.labelNutrients.protein.value));
+                            viewFoodEatenByTime.bundle.putString("carbs", Double.toString(response.labelNutrients.carbohydrates.value));
+                            viewFoodEatenByTime.bundle.putString("fats", Double.toString(response.labelNutrients.fat.value));
+                        }
+                        viewFoodEatenByTime.didFetch = true;
+                    }
+                    viewFoodEatenByTime.goToViewFood();
+                }
+
+                @Override
+                public void didError(String msg) {
+
+                }
+            };
+            return listener;
         }
-    };
+    }
+
 
     public void setSearchAdapter() {
-        res = response.results;
+        res = response.foods;
         searchRecyclerView.setAdapter(new SearchResultRecyclerViewAdapter(res, (view, pos) -> {
             ProgressHelper.showDialog(ViewFoodEatenByTime.this, "wait...");
-            manger.getFoodNutrients(nutrientsListener, Integer.toString(res.get(pos).id));
+            try {
+                manger.getFoodsNutrients(new GetNut(this).execute().get(), res.get(pos).fdcId);
+            } catch (ExecutionException | InterruptedException e) {
+                Toast.makeText(this, "something went wrong", Toast.LENGTH_SHORT).show();
+            }
             ProgressHelper.setDialogToSleep(true);
         }));
     }
@@ -215,19 +220,11 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
         }
     }
 
-    final FoodNameResponseListener listener = new FoodNameResponseListener() {
+    final FdcFoodSearchResponseListener listener = new FdcFoodSearchResponseListener() {
+
         @Override
-        public void didFetch(SearchFoodApiResponse response, String msg) {
-            searchRecyclerView.setHasFixedSize(true);
-            searchRecyclerView.setLayoutManager(new GridLayoutManager(ViewFoodEatenByTime.this, 1));
-            searchRecyclerView.setVisibility(View.VISIBLE);
-            if (toSearch) {
-                ViewFoodEatenByTime.response = response;
-                setSearchAdapter();
-            }
-            if (response.results.isEmpty()) {
-                searchRecyclerView.setVisibility(View.GONE);
-            }
+        public void didFetch(FdcSearchApiResponse response, String msg) {
+            ui(response);
         }
 
         @Override
@@ -235,6 +232,21 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
 
         }
     };
+
+    public void ui(FdcSearchApiResponse response) {
+        runOnUiThread(() -> {
+            searchRecyclerView.setHasFixedSize(true);
+            searchRecyclerView.setLayoutManager(new GridLayoutManager(ViewFoodEatenByTime.this, 1));
+            searchRecyclerView.setVisibility(View.VISIBLE);
+            if (toSearch) {
+                ViewFoodEatenByTime.response = response;
+                setSearchAdapter();
+            }
+            if (response.foods.isEmpty()) {
+                searchRecyclerView.setVisibility(View.GONE);
+            }
+        });
+    }
 
 
     public boolean isEmpty(String response) {
@@ -300,7 +312,7 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         toSearch = false;
-        manger.getFoods(listener, "ליאור");
+        manger.searchFoods(listener, "ליאור");
     }
 
     @SuppressLint("SetTextI18n")
