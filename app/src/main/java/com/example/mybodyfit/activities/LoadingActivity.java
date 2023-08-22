@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LoadingActivity extends AppCompatActivity {
 
@@ -23,9 +24,13 @@ public class LoadingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
-//        todo remove it after it works
-//        UserEatenFoodInADay.init(this);
-//        UserEatenFoodInADay.getInstance().deleteAll();
+        Intent intent;
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            intent = new Intent(this, Home.class);
+        } else {
+            intent = new Intent(this, LogIn.class);
+        }
         bar = findViewById(R.id.loading);
         textView = findViewById(R.id.loading_txt);
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
@@ -36,7 +41,7 @@ public class LoadingActivity extends AppCompatActivity {
                 bar.setVisibility(View.VISIBLE);
                 textView.setVisibility(View.VISIBLE);
             }
-            startActivity(new Intent(this, Home.class));
+            startActivity(intent);
             finish();
         }, 1500));
 

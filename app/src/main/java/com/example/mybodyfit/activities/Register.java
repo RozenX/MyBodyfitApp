@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
-import com.example.mybodyfit.struct.User;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
@@ -19,17 +18,12 @@ import java.util.Objects;
 public class Register extends AppCompatActivity {
 
     private FireBaseConnection users;
-    private User user;
-    private EditText nameTxt;
-    private EditText usernameTxt;
     private EditText passwordTxt;
     private EditText emailTxt;
-    private String userIDTxt;
-    private EditText phoneNumberTxt;
+
     boolean successes = true;
     Button registerBtn;
     FirebaseAuth firebaseAuth;
-    char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +33,8 @@ public class Register extends AppCompatActivity {
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
         firebaseAuth = FirebaseAuth.getInstance();
         users = FireBaseConnection.getInstance();
-        nameTxt = findViewById(R.id.name_et);
-        usernameTxt = findViewById(R.id.username_et);
         passwordTxt = findViewById(R.id.password_et);
         emailTxt = findViewById(R.id.gmail_et);
-        phoneNumberTxt = findViewById(R.id.phone_et);
         registerBtn = findViewById(R.id.register_btn);
         registerBtn.setOnClickListener(v -> {
             createNewUser();

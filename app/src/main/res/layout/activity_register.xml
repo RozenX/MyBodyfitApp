@@ -8,115 +8,59 @@
     android:background="@drawable/backgroundregister">
 
     <EditText
-        android:textColorHint="#000000"
-        android:backgroundTint="@color/black"
-        android:textColor="@color/black"
         android:id="@+id/gmail_et"
         android:layout_width="255dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/black"
         android:ems="10"
         android:hint="Gmail"
         android:inputType="textEmailAddress"
+        android:textColor="@color/black"
+        android:textColorHint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="0.192" />
 
     <EditText
-        android:textColorHint="#000000"
-        android:backgroundTint="@color/black"
-        android:textColor="@color/black"
-        android:id="@+id/phone_et"
-        android:layout_width="255dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Phone number"
-        android:inputType="numberSigned"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.466" />
-
-    <EditText
-        android:textColorHint="#000000"
-        android:backgroundTint="@color/black"
-        android:textColor="@color/black"
-        android:id="@+id/name_et"
-        android:layout_width="255dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Name"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.204" />
-
-    <EditText
-        android:textColorHint="#000000"
-        android:backgroundTint="@color/black"
-        android:textColor="@color/black"
-        android:id="@+id/username_et"
-        android:layout_width="255dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Username"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.269" />
-
-    <EditText
-        android:textColorHint="#000000"
-        android:backgroundTint="@color/black"
-        android:textColor="@color/black"
         android:id="@+id/password_et"
         android:layout_width="255dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/black"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPersonName"
+        android:textColor="@color/black"
+        android:textColorHint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.335" />
+        app:layout_constraintVertical_bias="0.258" />
 
     <TextView
-        android:textColor="#000000"
-        android:backgroundTint="@color/black"
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/black"
         android:text="Registration"
+        android:textColor="#000000"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/name_et"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.82" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:textColorHint="#000000"
         android:id="@+id/register_btn"
         android:layout_width="116dp"
         android:layout_height="73dp"
+        android:layout_marginBottom="436dp"
         android:text="Register"
+        android:textColorHint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.735"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phone_et"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintHorizontal_bias="0.423"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,10 +15,12 @@ import com.example.mybody.R;
 import com.example.mybodyfit.activities.settingsActivities.SetGoals;
 import com.example.mybodyfit.activities.settingsActivities.TrackSteps;
 import com.example.mybodyfit.struct.MenuThread;
+import com.example.mybodyfit.struct.ProgressHelper;
 import com.example.mybodyfit.struct.SettingsAttributes;
 import com.example.mybodyfit.struct.recyclerview_adapters.SettingsRecyclerViewAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -27,14 +29,14 @@ public class Settings extends AppCompatActivity {
     private FloatingActionButton fab;
     private RecyclerView recyclerView;
     private ArrayList<SettingsAttributes> settable;
-
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
-
+        firebaseAuth = FirebaseAuth.getInstance();
         settable = new ArrayList<>();
         fab = findViewById(R.id.fab);
         bnv = findViewById(R.id.bottomNavigationView);
@@ -71,6 +73,11 @@ public class Settings extends AppCompatActivity {
         SettingsRecyclerViewAdapter adapter = new SettingsRecyclerViewAdapter(settable, ((v, position) -> {
             if (settable.get(position).getType().equals("Log Out")) {
                 Intent intent = new Intent(Settings.this, LogIn.class);
+                ProgressHelper.showDialog(this,"loading...");
+                firebaseAuth.signOut();
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ProgressHelper.setDialogToSleep(true);
                 startActivity(intent);
             }
             if (settable.get(position).getType().equals("Set Goals")) {

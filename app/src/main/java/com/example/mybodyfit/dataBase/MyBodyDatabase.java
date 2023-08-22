@@ -15,7 +15,7 @@ import com.example.mybodyfit.dataBase.dao.SettingsDao;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.dataBase.entities.SettingsPreference;
 
-@Database(entities = {Foods.class, SettingsPreference.class}, version = 4)
+@Database(entities = {Foods.class, SettingsPreference.class}, version = 6)
 public abstract class MyBodyDatabase extends RoomDatabase {
 
     private static MyBodyDatabase instance = null;
