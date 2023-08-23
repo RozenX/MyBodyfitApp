@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.entities.Foods;
+import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
 import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
@@ -63,6 +64,7 @@ public class Log extends AppCompatActivity {
         caloricGoal = findViewById(R.id.caloric_goal);
 
         viewModel = new ViewModelProvider(this).get(FoodViewModel.class);
+
         addLogs();
         setAdapter();
         calculateCurrentCalories();

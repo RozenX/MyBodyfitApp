@@ -16,10 +16,11 @@ import java.util.concurrent.ExecutionException;
 public class FoodsRepository {
 
     private final FoodDao foodDao;
+    private final MyBodyDatabase database;
     private final LiveData<List<Foods>> allFoods;
 
     public FoodsRepository(Application app) {
-        MyBodyDatabase database = MyBodyDatabase.getInstance(app);
+        database = MyBodyDatabase.getInstance(app);
         foodDao = database.foodDao();
         allFoods = foodDao.pullAll();
     }
@@ -29,7 +30,7 @@ public class FoodsRepository {
     }
 
     public void deleteAll() {
-        new DeleteAllFoodsTask(foodDao);
+        new DeleteAllFoodsTask(foodDao, database);
     }
 
 
@@ -70,14 +71,16 @@ public class FoodsRepository {
 
     private static class DeleteAllFoodsTask extends AsyncTask<Foods, Void, Void> {
         private final FoodDao foodDao;
-
-        private DeleteAllFoodsTask(FoodDao foodDao) {
+        private final MyBodyDatabase db;
+        private DeleteAllFoodsTask(FoodDao foodDao, MyBodyDatabase db) {
             this.foodDao = foodDao;
+            this.db = db;
         }
 
         @Override
         protected Void doInBackground(Foods... foods) {
             foodDao.deleteAll();
+            db.clearAllTables();
             return null;
         }
     }

@@ -6,6 +6,9 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,7 +41,6 @@ public class ViewFoodStats extends AppCompatActivity {
     private TextView carbs;
     private TextView fats;
     private EditText amount;
-    private Button showBtn;
     private Button addBtn;
     private Button pop;
     private String mealTimeTxt;
@@ -61,14 +63,12 @@ public class ViewFoodStats extends AppCompatActivity {
         carbs = findViewById(R.id.food_carbs_view);
         fats = findViewById(R.id.food_fats_view);
         amount = findViewById(R.id.grams);
-        showBtn = findViewById(R.id.show_btn);
         addBtn = findViewById(R.id.add_food_btn);
         pop = findViewById(R.id.meal_time_btn);
         foodName.setText(getIntent().getStringExtra("name"));
         pop.setOnClickListener(this::showPopUp);
         viewModel = new ViewModelProvider(this).get(FoodViewModel.class);
         setStats();
-        setStatsBasedOnGrams();
         addFoodsToUser();
         MenuThread.init(this::manageNavigation);
         MenuThread.getInstance().start();
@@ -77,31 +77,49 @@ public class ViewFoodStats extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void setStats() {
         // gets the data from the api.
-        if (amount.getText() == null || amount.getText().toString().equals("")) {
-            calories_ = Double.parseDouble(getIntent().getStringExtra("calories"));
-            protein_ = Double.parseDouble(getIntent().getStringExtra("protein"));
-            carbs_ = Double.parseDouble(getIntent().getStringExtra("carbs"));
-            fats_ = Double.parseDouble(getIntent().getStringExtra("fats"));
-        } else {
-            calories_ *= Integer.parseInt(amount.getText().toString());
-            protein_ *= Integer.parseInt(amount.getText().toString());
-            carbs_ *= Integer.parseInt(amount.getText().toString());
-            fats_ *= Integer.parseInt(amount.getText().toString());
-        }
-        //  sets the text to the usable data.
-        this.calories.setText(Double.toString(calories_));
-        this.protein.setText(Double.toString(protein_));
-        this.carbs.setText(Double.toString(carbs_));
-        this.fats.setText(Double.toString(fats_));
 
         calories_ = Double.parseDouble(getIntent().getStringExtra("calories"));
         protein_ = Double.parseDouble(getIntent().getStringExtra("protein"));
         carbs_ = Double.parseDouble(getIntent().getStringExtra("carbs"));
         fats_ = Double.parseDouble(getIntent().getStringExtra("fats"));
-    }
+        calories.setText(Double.toString(calories_));
+        protein.setText(Double.toString(protein_));
+        carbs.setText(Double.toString(carbs_));
+        fats.setText(Double.toString(fats_));
+        amount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-    public void setStatsBasedOnGrams() {
-        showBtn.setOnClickListener(v -> setStats());
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s != null) {
+                    calories_ = Double.parseDouble(getIntent().getStringExtra("calories"))
+                            * Integer.parseInt(amount.getText().toString());
+                    protein_ = Double.parseDouble(getIntent().getStringExtra("protein"))
+                            * Integer.parseInt(amount.getText().toString());
+                    carbs_ = Double.parseDouble(getIntent().getStringExtra("carbs"))
+                            * Integer.parseInt(amount.getText().toString());
+                    fats_ = Double.parseDouble(getIntent().getStringExtra("fats"))
+                            * Integer.parseInt(amount.getText().toString());
+                } else {
+                    calories_ = Double.parseDouble(getIntent().getStringExtra("calories"));
+                    protein_ = Double.parseDouble(getIntent().getStringExtra("protein"));
+                    carbs_ = Double.parseDouble(getIntent().getStringExtra("carbs"));
+                    fats_ = Double.parseDouble(getIntent().getStringExtra("fats"));
+                }
+                calories.setText(Double.toString(calories_));
+                protein.setText(Double.toString(protein_));
+                carbs.setText(Double.toString(carbs_));
+                fats.setText(Double.toString(fats_));
+            }
+        });
     }
 
     public void addFoodsToUser() {
@@ -192,7 +210,7 @@ public class ViewFoodStats extends AppCompatActivity {
             Toast.makeText(this, "meal time field is empty", Toast.LENGTH_SHORT).show();
         } else {
             try {
-                viewModel.insert(new Foods(foodName.getText().toString(), calories_ * Double.parseDouble(amount), protein_, carbs_, fats_, mealTime, Double.parseDouble(amount), CurrentDate.getDateWithoutTimeUsingCalendar()));
+                viewModel.insert(new Foods(foodName.getText().toString(), calories_, protein_, carbs_, fats_, mealTime, Double.parseDouble(amount), CurrentDate.getDateWithoutTimeUsingCalendar()));
             } catch (Exception e) {
                 isSuccessful = false;
             }

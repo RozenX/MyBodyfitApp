@@ -12,7 +12,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
+import com.example.mybodyfit.dataBase.MyBodyDatabase;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
+import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoadingActivity extends AppCompatActivity {
@@ -25,7 +27,7 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
         Intent intent;
-
+        FireBaseConnection.init(this);
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             intent = new Intent(this, Home.class);
         } else {
@@ -44,6 +46,5 @@ public class LoadingActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }, 1500));
-
     }
 }

@@ -14,11 +14,13 @@ import com.example.mybodyfit.dataBase.dao.FoodDao;
 import com.example.mybodyfit.dataBase.dao.SettingsDao;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.dataBase.entities.SettingsPreference;
+import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 
 @Database(entities = {Foods.class, SettingsPreference.class}, version = 6)
 public abstract class MyBodyDatabase extends RoomDatabase {
 
     private static MyBodyDatabase instance = null;
+    private static FireBaseConnection fireBaseConnection;
 
     public abstract FoodDao foodDao();
 
@@ -26,8 +28,10 @@ public abstract class MyBodyDatabase extends RoomDatabase {
 
     public static synchronized MyBodyDatabase getInstance(Context context) {
         if (instance == null) {
+            FireBaseConnection.init(context);
+            fireBaseConnection = FireBaseConnection.getInstance();
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                    MyBodyDatabase.class, "myBody_database")
+                            MyBodyDatabase.class, "myBody_database")
                     .addCallback(roomCallBack)
                     .fallbackToDestructiveMigration()
                     .build();
@@ -35,14 +39,19 @@ public abstract class MyBodyDatabase extends RoomDatabase {
         return instance;
     }
 
+    public void deleteAllTables() {
+        new DeleteAll(this).execute();
+    }
+
     private static RoomDatabase.Callback roomCallBack = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
+            new PopulateDBTask(instance).execute();
         }
     };
 
-    private static class PopulateDBTask extends AsyncTask<Void, Void ,Void> {
+    private static class PopulateDBTask extends AsyncTask<Void, Void, Void> {
 
         private FoodDao foodDao;
 
@@ -52,7 +61,22 @@ public abstract class MyBodyDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            //todo if i want to init the data base with a food
+            FireBaseConnection.getInstance().addFoodsByUser(foodDao);
+            return null;
+        }
+    }
+
+    private static class DeleteAll extends AsyncTask<Void, Void, Void> {
+
+        private MyBodyDatabase db;
+
+        private DeleteAll(MyBodyDatabase db) {
+            this.db = db;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            db.clearAllTables();
             return null;
         }
     }

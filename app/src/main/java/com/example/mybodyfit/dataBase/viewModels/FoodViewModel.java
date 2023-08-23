@@ -20,7 +20,6 @@ public class FoodViewModel extends AndroidViewModel {
         super(application);
         foodsRepository = new FoodsRepository(application);
         allFoods = foodsRepository.pullAll();
-
     }
 
     public void insert(Foods food) {

@@ -18,6 +18,8 @@ public class Foods {
     private double amount;
     private String date;
 
+    public Foods() {}
+
     public Foods(String foodName, double calories, double protein, double carbs, double fats, int mealTime, double amount, String date) {
         this.foodName = foodName;
         this.calories = calories;

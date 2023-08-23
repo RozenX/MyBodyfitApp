@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mybody.R;
 import com.example.mybodyfit.activities.settingsActivities.SetGoals;
 import com.example.mybodyfit.activities.settingsActivities.TrackSteps;
+import com.example.mybodyfit.dataBase.MyBodyDatabase;
+import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
+import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
 import com.example.mybodyfit.struct.MenuThread;
 import com.example.mybodyfit.struct.ProgressHelper;
 import com.example.mybodyfit.struct.SettingsAttributes;
@@ -73,8 +77,10 @@ public class Settings extends AppCompatActivity {
         SettingsRecyclerViewAdapter adapter = new SettingsRecyclerViewAdapter(settable, ((v, position) -> {
             if (settable.get(position).getType().equals("Log Out")) {
                 Intent intent = new Intent(Settings.this, LogIn.class);
-                ProgressHelper.showDialog(this,"loading...");
-                firebaseAuth.signOut();
+                ProgressHelper.showDialog(this, "loading...");
+                FireBaseConnection.init(this);
+                FireBaseConnection.getInstance().addUserFoods(MyBodyDatabase.getInstance(this), this);
+                MyBodyDatabase.getInstance(this).deleteAllTables();
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ProgressHelper.setDialogToSleep(true);
