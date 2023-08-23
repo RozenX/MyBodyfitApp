@@ -13,10 +13,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.mybodyfit.dataBase.dao.FoodDao;
 import com.example.mybodyfit.dataBase.dao.SettingsDao;
 import com.example.mybodyfit.dataBase.entities.Foods;
-import com.example.mybodyfit.dataBase.entities.SettingsPreference;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 
-@Database(entities = {Foods.class, SettingsPreference.class}, version = 6)
+@Database(entities = {Foods.class}, version = 7)
 public abstract class MyBodyDatabase extends RoomDatabase {
 
     private static MyBodyDatabase instance = null;

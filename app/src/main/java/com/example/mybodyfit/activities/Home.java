@@ -36,8 +36,6 @@ public class Home extends AppCompatActivity {
     private BottomNavigationView bnv;
     private FloatingActionButton fab;
     private NestedScrollView scrollView;
-    private UserEatenFoodInADay db;
-
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -46,7 +44,6 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
         UserEatenFoodInADay.init(getApplicationContext());
-        db = UserEatenFoodInADay.getInstance();
         scrollView = findViewById(R.id.scrollView);
         bnv = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
@@ -177,7 +174,7 @@ public class Home extends AppCompatActivity {
     }
 
     public double getProteinEaten() {
-        ArrayList<FoodModel> foods = new ArrayList<>(db.pullFoods());
+        ArrayList<FoodModel> foods = new ArrayList<>();
         int sum = 0;
         for (FoodModel model : foods) {
             sum += model.getProtein();
@@ -186,7 +183,7 @@ public class Home extends AppCompatActivity {
     }
 
     public double getCarbsEaten() {
-        ArrayList<FoodModel> foods = new ArrayList<>(db.pullFoods());
+        ArrayList<FoodModel> foods = new ArrayList<>();
         int sum = 0;
         for (FoodModel model : foods) {
             sum += model.getCarbs();
@@ -195,7 +192,7 @@ public class Home extends AppCompatActivity {
     }
 
     public double getFatsEaten() {
-        ArrayList<FoodModel> foods = new ArrayList<>(db.pullFoods());
+        ArrayList<FoodModel> foods = new ArrayList<>();
         int sum = 0;
         for (FoodModel model : foods) {
             sum += model.getFats();
