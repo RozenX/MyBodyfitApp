@@ -16,9 +16,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 
 import com.example.mybody.R;
+import com.example.mybodyfit.dataBase.MyBodyDatabase;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
+import com.example.mybodyfit.dataBase.entities.Foods;
+import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
 import com.example.mybodyfit.struct.MenuThread;
+import com.example.mybodyfit.struct.NutrientsEatenToday;
+import com.example.mybodyfit.struct.PersonalPreference;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -65,11 +70,11 @@ public class Home extends AppCompatActivity {
         TextView accuracyTxt = findViewById(R.id.accuracyText);
         accuracyTxt.setText(accuracy.getProgress() + "%");
 
-        caloriesBar.setProgress(80);
-        proteinBar.setProgress(40);
-        carbsBar.setProgress(40);
-        fatsBar.setProgress(40);
-
+        getFoodEatenToday();
+        caloriesBar.setProgress((int) (100 * ((double) NutrientsEatenToday.calories / PersonalPreference.caloricGoal)));
+        proteinBar.setProgress((int) (100 * ((double) NutrientsEatenToday.protein / PersonalPreference.proteinGoal)));
+        carbsBar.setProgress((int) (100 * ((double) NutrientsEatenToday.carbs / PersonalPreference.carbGoal)));
+        fatsBar.setProgress((int) (100 * ((double) NutrientsEatenToday.fats / PersonalPreference.fatGoal)));
         graphJourney();
         MenuThread.init(this::manageNavigation);
         MenuThread.getInstance().start();
@@ -173,30 +178,30 @@ public class Home extends AppCompatActivity {
         finish();
     }
 
-    public double getProteinEaten() {
-        ArrayList<FoodModel> foods = new ArrayList<>();
-        int sum = 0;
-        for (FoodModel model : foods) {
-            sum += model.getProtein();
-        }
-        return sum;
-    }
-
-    public double getCarbsEaten() {
-        ArrayList<FoodModel> foods = new ArrayList<>();
-        int sum = 0;
-        for (FoodModel model : foods) {
-            sum += model.getCarbs();
-        }
-        return sum;
-    }
-
-    public double getFatsEaten() {
-        ArrayList<FoodModel> foods = new ArrayList<>();
-        int sum = 0;
-        for (FoodModel model : foods) {
-            sum += model.getFats();
-        }
-        return sum;
+    public void getFoodEatenToday() {
+        Runnable runnable = () -> {
+            ArrayList<Foods> breakfast = new ArrayList<>(MyBodyDatabase.getInstance(this).
+                    foodDao().pullByMealAndDateData(FoodModel.BREAKFAST, CurrentDate.getDateWithoutTimeUsingCalendar()));
+            ArrayList<Foods> lunch = new ArrayList<>(MyBodyDatabase.getInstance(this).
+                    foodDao().pullByMealAndDateData(FoodModel.LUNCH, CurrentDate.getDateWithoutTimeUsingCalendar()));
+            ArrayList<Foods> dinner = new ArrayList<>(MyBodyDatabase.getInstance(this).
+                    foodDao().pullByMealAndDateData(FoodModel.DINNER, CurrentDate.getDateWithoutTimeUsingCalendar()));
+            ArrayList<Foods> snacks = new ArrayList<>(MyBodyDatabase.getInstance(this).
+                    foodDao().pullByMealAndDateData(FoodModel.SNACK, CurrentDate.getDateWithoutTimeUsingCalendar()));
+            ArrayList<Foods> foods = new ArrayList<>();
+            foods.addAll(breakfast);
+            foods.addAll(lunch);
+            foods.addAll(dinner);
+            foods.addAll(snacks);
+            if (foods.size() > 0) {
+                for (Foods model : foods) {
+                    NutrientsEatenToday.calories += model.getCalories();
+                    NutrientsEatenToday.protein += model.getProtein();
+                    NutrientsEatenToday.carbs += model.getCarbs();
+                    NutrientsEatenToday.fats += model.getFats();
+                }
+            }
+        };
+        new Thread(runnable).start();
     }
 }

@@ -16,7 +16,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
+import com.example.mybodyfit.activities.Home;
 import com.example.mybodyfit.constants.AppConstants;
+import com.example.mybodyfit.struct.PersonalPreference;
 
 import java.util.Objects;
 
@@ -47,9 +49,27 @@ public class SetGoals extends AppCompatActivity {
         setBtn = findViewById(R.id.set_goals_btn);
 
         setDefaultValues();
+        getCurrentGoals();
         setGramsByValue();
         setGramsByCalories();
         goToSettings();
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void getCurrentGoals() {
+        caloricGoal.setText(Integer.toString(PersonalPreference.caloricGoal));
+        protein.setValue((PersonalPreference.proteinGoal *
+                AppConstants.NutrientBreakDown.CALORIES_IN_GRAM_PROTEIN * 100) /
+                Integer.parseInt(caloricGoal.getText().toString()));
+        carbs.setValue((PersonalPreference.carbGoal *
+                AppConstants.NutrientBreakDown.CALORIES_IN_GRAM_CARB * 100) /
+                Integer.parseInt(caloricGoal.getText().toString()));
+        fats.setValue((PersonalPreference.fatGoal *
+                AppConstants.NutrientBreakDown.CALORIES_IN_GRAM_FAT * 100) /
+                Integer.parseInt(caloricGoal.getText().toString()));
+        calcProtein();
+        calcCarbs();
+        calcFats();
     }
 
     public void setDefaultValues() {
@@ -148,7 +168,12 @@ public class SetGoals extends AppCompatActivity {
         setBtn.setOnClickListener(v -> {
             if (isGoalPossible()) {
                 if (!caloricGoal.getText().toString().equals("")) {
-                    Intent intent = new Intent(getApplicationContext(), Log.class);
+                    PersonalPreference.caloricGoal = Integer.parseInt(caloricGoal.getText().toString());
+                    PersonalPreference.proteinGoal = Integer.parseInt(proteinGrams.getText().toString());
+                    PersonalPreference.carbGoal = Integer.parseInt(carbsGrams.getText().toString());
+                    PersonalPreference.fatGoal = Integer.parseInt(fatsGrams.getText().toString());
+                    Toast.makeText(this, "goals are updated", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), Home.class));
                 } else {
                     Toast.makeText(this, "you did not set your caloric goal", Toast.LENGTH_SHORT).show();
                 }

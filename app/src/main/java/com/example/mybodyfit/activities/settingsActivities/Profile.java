@@ -17,7 +17,7 @@ public class Profile extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser fireBaseUser;
     private TextView mail;
-    private TextView password;
+    private TextView phone;
 
 
     @Override
@@ -27,10 +27,10 @@ public class Profile extends AppCompatActivity {
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         mail = findViewById(R.id.mail_profile);
-        password = findViewById(R.id.phone_profle);
+        phone = findViewById(R.id.phone_profle);
         firebaseAuth = FirebaseAuth.getInstance();
         fireBaseUser = firebaseAuth.getCurrentUser();
         mail.setText(fireBaseUser.getEmail());
-        password.setText(fireBaseUser.getPhoneNumber());
+        phone.setText(fireBaseUser.getPhoneNumber());
     }
 }

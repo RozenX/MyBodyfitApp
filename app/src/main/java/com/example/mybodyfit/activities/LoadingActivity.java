@@ -15,6 +15,7 @@ import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.MyBodyDatabase;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
+import com.example.mybodyfit.struct.NutrientsEatenToday;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoadingActivity extends AppCompatActivity {
@@ -29,6 +30,7 @@ public class LoadingActivity extends AppCompatActivity {
         Intent intent;
         FireBaseConnection.init(this);
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            NutrientsEatenToday.rest();
             intent = new Intent(this, Home.class);
         } else {
             intent = new Intent(this, LogIn.class);

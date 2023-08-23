@@ -1,5 +1,7 @@
 package com.example.mybodyfit.dataBase.firebase;
 
+import static com.example.mybodyfit.struct.UserName.getName;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
@@ -12,6 +14,7 @@ import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.dao.FoodDao;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
+import com.example.mybodyfit.struct.PersonalPreference;
 import com.example.mybodyfit.struct.UserName;
 import com.example.mybodyfit.struct.UsersFoods;
 import com.google.android.gms.common.api.internal.LifecycleActivity;
@@ -60,8 +63,7 @@ public final class FireBaseConnection {
 
     public void addUserFoods(MyBodyDatabase db, LifecycleOwner activity) {
         db.foodDao().pullAll().observe(activity, foods -> {
-            reference.child("foodsDb").child(UserName
-                            .getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+            reference.child("foodsDb").child(getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
                     .child("foods").setValue(foods).addOnCompleteListener(task -> {
                         if (!task.isSuccessful())
                             Toast.makeText(context, task.getException().getMessage(),
@@ -82,8 +84,7 @@ public final class FireBaseConnection {
                 Runnable runnable = () -> {
                     GenericTypeIndicator<ArrayList<Foods>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Foods>>() {
                     };
-                    ArrayList<Foods> foods = snapshot.child("foodsDb").child(UserName
-                                    .getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                    ArrayList<Foods> foods = snapshot.child("foodsDb").child(getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
                             .child("foods").getValue(genericTypeIndicator);
                     if (foods != null)
                         for (Foods f : foods) {
@@ -98,5 +99,31 @@ public final class FireBaseConnection {
 
             }
         });
+    }
+
+    public void addUsersSettings(PersonalPreference settings) {
+        reference.child("settings")
+                .child(getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                .child("personal preference")
+                .setValue(settings);
+    }
+
+    public PersonalPreference getUserSettings() {
+        final PersonalPreference[] personalPreference = new PersonalPreference[1];
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                personalPreference[0] = snapshot.child("settings")
+                        .child(getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                        .child("personal preference")
+                        .getValue(PersonalPreference.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return personalPreference[0];
     }
 }

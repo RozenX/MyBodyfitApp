@@ -11,7 +11,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 
 import com.example.mybodyfit.dataBase.dao.FoodDao;
-import com.example.mybodyfit.dataBase.dao.SettingsDao;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 
@@ -23,7 +22,6 @@ public abstract class MyBodyDatabase extends RoomDatabase {
 
     public abstract FoodDao foodDao();
 
-    public abstract SettingsDao settingsDao();
 
     public static synchronized MyBodyDatabase getInstance(Context context) {
         if (instance == null) {
@@ -60,7 +58,7 @@ public abstract class MyBodyDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            FireBaseConnection.getInstance().addFoodsByUser(foodDao);
+            //FireBaseConnection.getInstance().addFoodsByUser(foodDao);
             return null;
         }
     }
