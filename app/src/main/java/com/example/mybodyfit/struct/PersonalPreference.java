@@ -1,18 +1,28 @@
 package com.example.mybodyfit.struct;
 
-import android.graphics.Bitmap;
-
 public class PersonalPreference {
 
-    public static boolean isToNotifications = true;
-    public static String breakfastNotification = "9:00";
-    public static String lunchNotification = "15:00";
-    public static String dinnerNotification = "20:00";
-    public static int currentLogStreak = 0;
-    public static int bestLogSteak = 0;
-    public static Bitmap profilePic = null;
-    public static int caloricGoal = 2000;
-    public static int proteinGoal = 150;
-    public static int carbGoal = 200;
-    public static int fatGoal = 67;
+    public boolean isToNotifications;
+    public String breakfastNotification;
+    public String lunchNotification;
+    public String dinnerNotification;
+    public int currentLogStreak;
+    public int bestLogSteak;
+    public int caloricGoal;
+    public int proteinGoal;
+    public int carbGoal;
+    public int fatGoal;
+
+    public void setDefaultSettings() {
+        isToNotifications = true;
+        breakfastNotification = "9:00";
+        lunchNotification = "15:00";
+        dinnerNotification = "20:00";
+        currentLogStreak = 0;
+        bestLogSteak = 0;
+        caloricGoal = 2000;
+        proteinGoal = 150;
+        carbGoal = 200;
+        fatGoal = 67;
+    }
 }

@@ -20,8 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mybody.R;
+import com.example.mybodyfit.dataBase.MyBodyDatabase;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.entities.Foods;
+import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
 import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
@@ -99,7 +101,7 @@ public class ViewFoodStats extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s != null) {
+                if (!s.toString().equals("")) {
                     calories_ = Double.parseDouble(getIntent().getStringExtra("calories"))
                             * Integer.parseInt(amount.getText().toString());
                     protein_ = Double.parseDouble(getIntent().getStringExtra("protein"))
@@ -211,6 +213,8 @@ public class ViewFoodStats extends AppCompatActivity {
         } else {
             try {
                 viewModel.insert(new Foods(foodName.getText().toString(), calories_, protein_, carbs_, fats_, mealTime, Double.parseDouble(amount), CurrentDate.getDateWithoutTimeUsingCalendar()));
+                FireBaseConnection.init(this);
+                FireBaseConnection.getInstance().addUserFoods(MyBodyDatabase.getInstance(this));
             } catch (Exception e) {
                 isSuccessful = false;
             }

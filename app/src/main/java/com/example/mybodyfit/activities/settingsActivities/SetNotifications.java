@@ -1,16 +1,27 @@
 package com.example.mybodyfit.activities.settingsActivities;
 
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
+import com.example.mybodyfit.activities.Home;
 import com.example.mybodyfit.struct.NumToTime;
 import com.example.mybodyfit.struct.PersonalPreference;
+import com.example.mybodyfit.struct.UserName;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SetNotifications extends AppCompatActivity {
 
@@ -20,6 +31,7 @@ public class SetNotifications extends AppCompatActivity {
     private NumberPicker lunchMinutes;
     private NumberPicker dinnerHours;
     private NumberPicker dinnerMinutes;
+    private PersonalPreference preference;
     private Button setBtn;
 
     @Override
@@ -35,10 +47,25 @@ public class SetNotifications extends AppCompatActivity {
         dinnerHours = findViewById(R.id.dinner_hours);
         dinnerMinutes = findViewById(R.id.dinner_minutes);
         setBtn = findViewById(R.id.set_notifications_btn);
+        setFormat();
+        FirebaseDatabase.getInstance().getReference()
+                .child("settings")
+                .child(UserName.getName(FirebaseAuth.getInstance().getCurrentUser().getEmail())).addValueEventListener(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                preference = snapshot.getValue(PersonalPreference.class);
+                                setClock();
+                                getTime();
+                                setTime();
+                            }
 
-        setClock();
-        getTime();
-        setTime();
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
     }
 
     public void setClock() {
@@ -56,13 +83,20 @@ public class SetNotifications extends AppCompatActivity {
         dinnerMinutes.setMaxValue(59);
     }
 
+    @SuppressLint("DefaultLocale")
+    public void setFormat() {
+        breakfastMinutes.setFormatter(value -> String.format("%02d", value));
+        lunchMinutes.setFormatter(value -> String.format("%02d", value));
+        dinnerMinutes.setFormatter(value -> String.format("%02d", value));
+    }
+
     public void getTime() {
-        breakfastHours.setValue(NumToTime.getHours(PersonalPreference.breakfastNotification));
-        breakfastMinutes.setValue(NumToTime.getHours(PersonalPreference.breakfastNotification));
-        lunchHours.setValue(NumToTime.getHours(PersonalPreference.lunchNotification));
-        lunchMinutes.setValue(NumToTime.getHours(PersonalPreference.lunchNotification));
-        dinnerHours.setValue(NumToTime.getHours(PersonalPreference.dinnerNotification));
-        dinnerMinutes.setValue(NumToTime.getHours(PersonalPreference.dinnerNotification));
+        breakfastHours.setValue(NumToTime.getHours(preference.breakfastNotification));
+        breakfastMinutes.setValue(NumToTime.getMinutes(preference.breakfastNotification));
+        lunchHours.setValue(NumToTime.getHours(preference.lunchNotification));
+        lunchMinutes.setValue(NumToTime.getMinutes(preference.lunchNotification));
+        dinnerHours.setValue(NumToTime.getHours(preference.dinnerNotification));
+        dinnerMinutes.setValue(NumToTime.getMinutes(preference.dinnerNotification));
     }
 
     public String getBreakfastTime() {
@@ -86,12 +120,27 @@ public class SetNotifications extends AppCompatActivity {
     public void setTime() {
         setBtn.setOnClickListener(v -> {
             if (isAllDifferent()) {
-                PersonalPreference.breakfastNotification =
-                        NumToTime.getTime(breakfastHours.getValue(), breakfastMinutes.getValue());
-                PersonalPreference.lunchNotification =
-                        NumToTime.getTime(lunchHours.getValue(), lunchMinutes.getValue());
-                PersonalPreference.dinnerNotification =
-                        NumToTime.getTime(dinnerHours.getValue(), dinnerMinutes.getValue());
+                preference.breakfastNotification = NumToTime.getTime(breakfastHours.getValue(), breakfastMinutes.getValue());
+                preference.lunchNotification = NumToTime.getTime(lunchHours.getValue(), lunchMinutes.getValue());
+                preference.dinnerNotification = NumToTime.getTime(dinnerHours.getValue(), dinnerMinutes.getValue());
+                        FirebaseDatabase.getInstance().getReference().child("settings")
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                            dataSnapshot.getRef().setValue(preference);
+                                            Toast.makeText(SetNotifications.this, "the notification are updated", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                startActivity(new Intent(getApplicationContext(), Home.class));
+            } else {
+                Toast.makeText(this, "all the notifications times needs to be different", Toast.LENGTH_SHORT).show();
             }
         });
     }

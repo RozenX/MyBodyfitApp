@@ -27,6 +27,7 @@ import com.example.mybody.R;
 import com.example.mybodyfit.constants.AppConstants;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.entities.Foods;
+import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
 import com.example.mybodyfit.spoonacular.RequestManger;
 import com.example.mybodyfit.struct.CurrentDate;
@@ -247,6 +248,12 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(getApplicationContext(), Log.class));
+    }
+
     @SuppressLint("NonConstantResourceId")
     public void manageNavigation() {
         fab.setOnClickListener(v -> goToAddFood());
@@ -310,35 +317,37 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String meal = parent.getItemAtPosition(position).toString();
-                ((TextView) parent.getChildAt(0)).setTextSize(20);
-                ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
-                if (meal.equals("Breakfast")) {
-                    mealTime = FoodModel.BREAKFAST;
-                    viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
-                        foodsAdapter.setFoods(foods);
-                    });
-                    setAdapter();
-                }
-                if (meal.equals("Lunch")) {
-                    mealTime = FoodModel.LUNCH;
-                    viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
-                        foodsAdapter.setFoods(foods);
-                    });
-                    setAdapter();
-                }
-                if (meal.equals("Dinner")) {
-                    mealTime = FoodModel.DINNER;
-                    viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
-                        foodsAdapter.setFoods(foods);
-                    });
+                if (parent.getChildAt(0 ) != null) {
+                    ((TextView) parent.getChildAt(0)).setTextSize(20);
+                    ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
+                    if (meal.equals("Breakfast")) {
+                        mealTime = FoodModel.BREAKFAST;
+                        viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
+                            foodsAdapter.setFoods(foods);
+                        });
+                        setAdapter();
+                    }
+                    if (meal.equals("Lunch")) {
+                        mealTime = FoodModel.LUNCH;
+                        viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
+                            foodsAdapter.setFoods(foods);
+                        });
+                        setAdapter();
+                    }
+                    if (meal.equals("Dinner")) {
+                        mealTime = FoodModel.DINNER;
+                        viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
+                            foodsAdapter.setFoods(foods);
+                        });
 
-                }
-                if (meal.equals("Snacks")) {
-                    mealTime = FoodModel.SNACK;
-                    viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
-                        foodsAdapter.setFoods(foods);
-                    });
-                    setAdapter();
+                    }
+                    if (meal.equals("Snacks")) {
+                        mealTime = FoodModel.SNACK;
+                        viewModel.pullByMealAndDate(mealTime, CurrentDate.getDateWithoutTimeUsingCalendar()).observe(ViewFoodEatenByTime.this, foods -> {
+                            foodsAdapter.setFoods(foods);
+                        });
+                        setAdapter();
+                    }
                 }
             }
 
@@ -354,6 +363,8 @@ public class ViewFoodEatenByTime extends AppCompatActivity {
         popUp.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.delete) {
                 viewModel.deleteByMeal(food);
+                FireBaseConnection.init(this);
+                FireBaseConnection.getInstance().removeFood(food);
                 setAdapter();
                 return true;
             }

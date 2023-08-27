@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 
@@ -24,6 +25,7 @@ import com.example.mybodyfit.struct.FoodModel;
 import com.example.mybodyfit.struct.MenuThread;
 import com.example.mybodyfit.struct.NutrientsEatenToday;
 import com.example.mybodyfit.struct.PersonalPreference;
+import com.example.mybodyfit.struct.UserName;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -32,6 +34,11 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -41,6 +48,15 @@ public class Home extends AppCompatActivity {
     private BottomNavigationView bnv;
     private FloatingActionButton fab;
     private NestedScrollView scrollView;
+    private PersonalPreference preference;
+    private ProgressBar caloriesBar;
+    private ProgressBar proteinBar;
+    private ProgressBar carbsBar;
+    private ProgressBar fatsBar;
+    int calories;
+    int protein;
+    int carbs;
+    int fats;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -53,16 +69,41 @@ public class Home extends AppCompatActivity {
         bnv = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
 
-        ProgressBar caloriesBar = findViewById(R.id.pb_calories);
+        caloriesBar = findViewById(R.id.pb_calories);
 
-        ProgressBar proteinBar = findViewById(R.id.pb_protein);
+        proteinBar = findViewById(R.id.pb_protein);
         proteinBar.getProgressDrawable().setColorFilter((Color.parseColor("#D69E10")), android.graphics.PorterDuff.Mode.SRC_IN);
 
-        ProgressBar carbsBar = findViewById(R.id.pb_carbs);
+        carbsBar = findViewById(R.id.pb_carbs);
         carbsBar.getProgressDrawable().setColorFilter((Color.parseColor("#D69E10")), android.graphics.PorterDuff.Mode.SRC_IN);
 
-        ProgressBar fatsBar = findViewById(R.id.pb_fats);
+        fatsBar = findViewById(R.id.pb_fats);
         fatsBar.getProgressDrawable().setColorFilter((Color.parseColor("#D69E10")), android.graphics.PorterDuff.Mode.SRC_IN);
+
+//        PersonalPreference personalPreference = new PersonalPreference();
+//        personalPreference.setDefaultSettings();
+//
+//        FirebaseDatabase.getInstance().getReference().child("settings").child(UserName.getName(FirebaseAuth.getInstance().getCurrentUser().getEmail())).setValue(personalPreference);
+        FirebaseDatabase.getInstance().getReference().child("settings")
+                .child(UserName.getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        preference = snapshot.getValue(PersonalPreference.class);
+                        getFoodEatenToday();
+                        caloriesBar.setProgress((int) (100 * ((double) calories / preference.caloricGoal)));
+                        proteinBar.setProgress((int) (100 * ((double) protein / preference.proteinGoal)));
+                        carbsBar.setProgress((int) (100 * ((double) carbs / preference.carbGoal)));
+                        fatsBar.setProgress((int) (100 * ((double) fats / preference.fatGoal)));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
 
         ProgressBar accuracy = findViewById(R.id.accuracy);
         accuracy.setProgress(60);
@@ -70,11 +111,7 @@ public class Home extends AppCompatActivity {
         TextView accuracyTxt = findViewById(R.id.accuracyText);
         accuracyTxt.setText(accuracy.getProgress() + "%");
 
-        getFoodEatenToday();
-        caloriesBar.setProgress((int) (100 * ((double) NutrientsEatenToday.calories / PersonalPreference.caloricGoal)));
-        proteinBar.setProgress((int) (100 * ((double) NutrientsEatenToday.protein / PersonalPreference.proteinGoal)));
-        carbsBar.setProgress((int) (100 * ((double) NutrientsEatenToday.carbs / PersonalPreference.carbGoal)));
-        fatsBar.setProgress((int) (100 * ((double) NutrientsEatenToday.fats / PersonalPreference.fatGoal)));
+
         graphJourney();
         MenuThread.init(this::manageNavigation);
         MenuThread.getInstance().start();
@@ -195,10 +232,10 @@ public class Home extends AppCompatActivity {
             foods.addAll(snacks);
             if (foods.size() > 0) {
                 for (Foods model : foods) {
-                    NutrientsEatenToday.calories += model.getCalories();
-                    NutrientsEatenToday.protein += model.getProtein();
-                    NutrientsEatenToday.carbs += model.getCarbs();
-                    NutrientsEatenToday.fats += model.getFats();
+                    calories += model.getCalories();
+                    protein += model.getProtein();
+                    carbs += model.getCarbs();
+                    fats += model.getFats();
                 }
             }
         };

@@ -13,12 +13,19 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.activities.Home;
 import com.example.mybodyfit.constants.AppConstants;
 import com.example.mybodyfit.struct.PersonalPreference;
+import com.example.mybodyfit.struct.UserName;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -32,6 +39,7 @@ public class SetGoals extends AppCompatActivity {
     private TextView carbsGrams;
     private TextView fatsGrams;
     private Button setBtn;
+    private PersonalPreference preference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,24 +55,37 @@ public class SetGoals extends AppCompatActivity {
         carbsGrams = findViewById(R.id.carbs_grams);
         fatsGrams = findViewById(R.id.fats_grams);
         setBtn = findViewById(R.id.set_goals_btn);
+        FirebaseDatabase.getInstance().getReference().child("settings")
+                .child(UserName.getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        preference = snapshot.getValue(PersonalPreference.class);
+                        setDefaultValues();
+                        getCurrentGoals();
+                        setGramsByValue();
+                        setGramsByCalories();
+                        goToSettings();
+                    }
 
-        setDefaultValues();
-        getCurrentGoals();
-        setGramsByValue();
-        setGramsByCalories();
-        goToSettings();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
     }
 
     @SuppressLint("SetTextI18n")
     public void getCurrentGoals() {
-        caloricGoal.setText(Integer.toString(PersonalPreference.caloricGoal));
-        protein.setValue((PersonalPreference.proteinGoal *
+        caloricGoal.setText(Integer.toString(preference.caloricGoal));
+        protein.setValue((preference.proteinGoal *
                 AppConstants.NutrientBreakDown.CALORIES_IN_GRAM_PROTEIN * 100) /
                 Integer.parseInt(caloricGoal.getText().toString()));
-        carbs.setValue((PersonalPreference.carbGoal *
+        carbs.setValue((preference.carbGoal *
                 AppConstants.NutrientBreakDown.CALORIES_IN_GRAM_CARB * 100) /
                 Integer.parseInt(caloricGoal.getText().toString()));
-        fats.setValue((PersonalPreference.fatGoal *
+        fats.setValue((preference.fatGoal *
                 AppConstants.NutrientBreakDown.CALORIES_IN_GRAM_FAT * 100) /
                 Integer.parseInt(caloricGoal.getText().toString()));
         calcProtein();
@@ -163,15 +184,28 @@ public class SetGoals extends AppCompatActivity {
         }
     }
 
-
     public void goToSettings() {
         setBtn.setOnClickListener(v -> {
             if (isGoalPossible()) {
                 if (!caloricGoal.getText().toString().equals("")) {
-                    PersonalPreference.caloricGoal = Integer.parseInt(caloricGoal.getText().toString());
-                    PersonalPreference.proteinGoal = Integer.parseInt(proteinGrams.getText().toString());
-                    PersonalPreference.carbGoal = Integer.parseInt(carbsGrams.getText().toString());
-                    PersonalPreference.fatGoal = Integer.parseInt(fatsGrams.getText().toString());
+                    preference.caloricGoal = Integer.parseInt(caloricGoal.getText().toString());
+                    preference.proteinGoal = Integer.parseInt(proteinGrams.getText().toString());
+                    preference.carbGoal = Integer.parseInt(carbsGrams.getText().toString());
+                    preference.fatGoal = Integer.parseInt(fatsGrams.getText().toString());
+                    FirebaseDatabase.getInstance().getReference().child("settings")
+                           .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        dataSnapshot.getRef().setValue(preference);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                     Toast.makeText(this, "goals are updated", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getApplicationContext(), Home.class));
                 } else {

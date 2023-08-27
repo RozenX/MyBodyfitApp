@@ -48,4 +48,8 @@ public class FoodViewModel extends AndroidViewModel {
     public List<Foods> pullByMealAndDateData(int mealTime, String date) {
         return foodsRepository.pullByMealAndDateData(mealTime, date);
     }
+
+    public List<Foods> pullAllData() {
+        return foodsRepository.pullAllData();
+    }
 }

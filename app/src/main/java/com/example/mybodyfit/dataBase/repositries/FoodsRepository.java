@@ -38,6 +38,13 @@ public class FoodsRepository {
         new DeleteFoodByMealTask(foodDao).execute(food);
     }
 
+    public List<Foods> pullAllData() {
+        try {
+            return new PullAllFoodsDataTask(foodDao).execute().get();
+        } catch (ExecutionException | InterruptedException e) {
+            return null;
+        }
+    }
 
     public LiveData<List<Foods>> pullAll() {
         return allFoods;
@@ -72,6 +79,7 @@ public class FoodsRepository {
     private static class DeleteAllFoodsTask extends AsyncTask<Foods, Void, Void> {
         private final FoodDao foodDao;
         private final MyBodyDatabase db;
+
         private DeleteAllFoodsTask(FoodDao foodDao, MyBodyDatabase db) {
             this.foodDao = foodDao;
             this.db = db;
@@ -143,6 +151,20 @@ public class FoodsRepository {
         @Override
         protected List<Foods> doInBackground(Void... voids) {
             return foodDao.pullByMealAndDateData(mealTime, date);
+        }
+    }
+
+    private static class PullAllFoodsDataTask extends AsyncTask<Void, Void, List<Foods>> {
+
+        private final FoodDao foodDao;
+
+        private PullAllFoodsDataTask(FoodDao foodDao) {
+            this.foodDao = foodDao;
+        }
+
+        @Override
+        protected List<Foods> doInBackground(Void... voids) {
+            return foodDao.pullAllData();
         }
     }
 }

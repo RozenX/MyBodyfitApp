@@ -11,7 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
+import com.example.mybodyfit.struct.PersonalPreference;
+import com.example.mybodyfit.struct.UserName;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -46,6 +49,10 @@ public class Register extends AppCompatActivity {
         firebaseAuth.createUserWithEmailAndPassword(emailTxt.getText().toString(),
                 passwordTxt.getText().toString()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                PersonalPreference personalPreference = new PersonalPreference();
+                personalPreference.setDefaultSettings();
+                FirebaseDatabase.getInstance().getReference().child("settings")
+                        .child(UserName.getName(emailTxt.getText().toString())).setValue(personalPreference);
                 Toast.makeText(this, "you have registered successfully", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();

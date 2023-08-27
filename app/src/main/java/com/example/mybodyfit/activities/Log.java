@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybody.R;
+import com.example.mybodyfit.dataBase.MyBodyDatabase;
 import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
@@ -24,9 +26,16 @@ import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
 import com.example.mybodyfit.struct.LogAttributes;
 import com.example.mybodyfit.struct.MenuThread;
+import com.example.mybodyfit.struct.PersonalPreference;
+import com.example.mybodyfit.struct.UserName;
 import com.example.mybodyfit.struct.recyclerview_adapters.LogRecyclerViewAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +52,7 @@ public class Log extends AppCompatActivity {
     private TextView caloriesLeft;
     private TextView caloricGoal;
     private FoodViewModel viewModel;
+    private PersonalPreference preference;
 
 
     public Log() {
@@ -62,12 +72,24 @@ public class Log extends AppCompatActivity {
         caloriesEaten = findViewById(R.id.calories_eaten);
         caloriesLeft = findViewById(R.id.calories_left);
         caloricGoal = findViewById(R.id.caloric_goal);
-
         viewModel = new ViewModelProvider(this).get(FoodViewModel.class);
+
+        FirebaseDatabase.getInstance().getReference().child("settings").child(UserName.getName(FirebaseAuth.getInstance().getCurrentUser().getEmail())).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                preference = snapshot.getValue(PersonalPreference.class);
+                caloricGoal.setText(Integer.toString(preference.caloricGoal));
+                calculateCurrentCalories();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         addLogs();
         setAdapter();
-        calculateCurrentCalories();
         MenuThread.init(this::manageNavigation);
         MenuThread.getInstance().start();
     }
@@ -202,7 +224,8 @@ public class Log extends AppCompatActivity {
         List<Foods> lunch = viewModel.pullByMealAndDateData(FoodModel.LUNCH, CurrentDate.getDateWithoutTimeUsingCalendar());
         List<Foods> dinner = viewModel.pullByMealAndDateData(FoodModel.DINNER, CurrentDate.getDateWithoutTimeUsingCalendar());
         List<Foods> snacks = viewModel.pullByMealAndDateData(FoodModel.SNACK, CurrentDate.getDateWithoutTimeUsingCalendar());
-
+        FireBaseConnection.init(this);
+        FireBaseConnection.getInstance().addUserFoods(MyBodyDatabase.getInstance(this));
         for (int i = 0; i < breakfast.size(); i++) {
             calories[0] += breakfast.get(i).getCalories();
         }

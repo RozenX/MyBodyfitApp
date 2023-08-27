@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.activities.settingsActivities.SetGoals;
+import com.example.mybodyfit.activities.settingsActivities.SetNotifications;
 import com.example.mybodyfit.activities.settingsActivities.TrackSteps;
 import com.example.mybodyfit.dataBase.MyBodyDatabase;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
@@ -79,7 +80,7 @@ public class Settings extends AppCompatActivity {
                 Intent intent = new Intent(Settings.this, LogIn.class);
                 ProgressHelper.showDialog(this, "loading...");
                 FireBaseConnection.init(this);
-                FireBaseConnection.getInstance().addUserFoods(MyBodyDatabase.getInstance(this), this);
+                FireBaseConnection.getInstance().addUserFoods(MyBodyDatabase.getInstance(this));
                 MyBodyDatabase.getInstance(this).deleteAllTables();
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -88,6 +89,10 @@ public class Settings extends AppCompatActivity {
             }
             if (settable.get(position).getType().equals("Set Goals")) {
                 Intent intent = new Intent(Settings.this, SetGoals.class);
+                startActivity(intent);
+            }
+            if (settable.get(position).getType().equals("Set Notifications")) {
+                Intent intent = new Intent(Settings.this, SetNotifications.class);
                 startActivity(intent);
             }
             if (settable.get(position).getType().equals("Track steps")) {
@@ -102,11 +107,10 @@ public class Settings extends AppCompatActivity {
     }
 
     public void addSettings() {
-        settable.add(new SettingsAttributes("Notifications", null));
+        settable.add(new SettingsAttributes("Set Notifications", null));
         settable.add(new SettingsAttributes("Set Goals", R.drawable.baseline_flag_24));
         settable.add(new SettingsAttributes("Profile", R.drawable.baseline_person_pin_24));
         settable.add(new SettingsAttributes("Track steps", null));
-        settable.add(new SettingsAttributes("Set Notifications", null));
         settable.add(new SettingsAttributes("Log Out", R.drawable.baseline_logout_24));
     }
 

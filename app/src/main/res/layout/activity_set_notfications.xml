@@ -7,8 +7,8 @@
     tools:context="com.example.mybodyfit.activities.settingsActivities.SetNotifications">
 
     <LinearLayout
-        android:layout_width="196dp"
-        android:layout_height="55dp"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_marginTop="64dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.074"
@@ -17,8 +17,8 @@
 
         <NumberPicker
             android:id="@+id/breakfast_hours"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.075"
@@ -26,10 +26,17 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.204" />
 
+        <TextView
+            android:id="@+id/textView29"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text=":" />
+
         <NumberPicker
             android:id="@+id/breakfast_minutes"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.075"
@@ -41,8 +48,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="200dp"
-        android:layout_height="55dp"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.075"
@@ -52,8 +59,8 @@
 
         <NumberPicker
             android:id="@+id/lunch_hour"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.075"
@@ -61,16 +68,23 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.251" />
 
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text=":" />
+
         <NumberPicker
             android:id="@+id/lunch_minutes"
-            android:layout_width="100dp"
-            android:layout_height="50dp" />
+            android:layout_width="50dp"
+            android:layout_height="45dp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="200dp"
-        android:layout_height="55dp"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.075"
@@ -80,13 +94,20 @@
 
         <NumberPicker
             android:id="@+id/dinner_hours"
-            android:layout_width="100dp"
-            android:layout_height="50dp" />
+            android:layout_width="50dp"
+            android:layout_height="45dp" />
+
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text=":" />
 
         <NumberPicker
             android:id="@+id/dinner_minutes"
-            android:layout_width="100dp"
-            android:layout_height="50dp" />
+            android:layout_width="50dp"
+            android:layout_height="45dp" />
     </LinearLayout>
 
     <TextView
@@ -135,4 +156,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="On"
+        android:textOff="off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.907"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.062" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
+import com.example.mybodyfit.dataBase.MyBodyDatabase;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,12 +52,14 @@ public class LogIn extends AppCompatActivity {
     public void login(View v) {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(gmail.getText().toString(),
                 password.getText().toString()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        startActivity(new Intent(this, Home.class));
-                    } else {
-                        Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            if (task.isSuccessful()) {
+                FireBaseConnection.init(this);
+                FireBaseConnection.getInstance().addFoodsByUser(MyBodyDatabase.getInstance(this).foodDao());
+                startActivity(new Intent(this, Home.class));
+            } else {
+                Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

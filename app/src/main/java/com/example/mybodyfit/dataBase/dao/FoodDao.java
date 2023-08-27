@@ -24,6 +24,9 @@ public interface FoodDao {
     void deleteByMeal(Foods food);
 
     @Query("SELECT * FROM foods_table;")
+    List<Foods> pullAllData();
+
+    @Query("SELECT * FROM foods_table;")
     LiveData<List<Foods>> pullAll();
 
     @Query("SELECT * FROM foods_table WHERE mealTime = :mealTime AND date = :date;")

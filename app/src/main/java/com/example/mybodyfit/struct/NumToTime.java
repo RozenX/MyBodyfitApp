@@ -13,6 +13,18 @@ public class NumToTime {
     }
 
     public static int getMinutes(String time) {
-        return Integer.parseInt(time.substring(time.indexOf(":")));
+        String minutes = time.substring(time.indexOf(":") + 1);
+        try {
+            return Integer.parseInt(minutes);
+        } catch (Exception e) {
+            if (minutes.equals("00")) {
+                return 0;
+            }
+            if (minutes.indexOf("0") == 0) {
+                return Integer.parseInt(Character.toString(minutes.charAt(1)));
+            } else {
+                return Integer.parseInt(minutes);
+            }
+        }
     }
 }
