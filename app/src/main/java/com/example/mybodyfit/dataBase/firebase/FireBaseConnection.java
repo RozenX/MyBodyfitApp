@@ -7,10 +7,8 @@ import android.content.Context;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
 
 import com.example.mybodyfit.dataBase.MyBodyDatabase;
-import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.dao.FoodDao;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +25,6 @@ import javax.inject.Singleton;
 
 public final class FireBaseConnection {
 
-    UserEatenFoodInADay foodDb;
     private final DatabaseReference reference;
     @SuppressLint("StaticFieldLeak")
     private Context context;
@@ -43,13 +40,11 @@ public final class FireBaseConnection {
         this.reference = FirebaseDatabase.getInstance().getReference();
         this.context = context;
 
-        foodDb = UserEatenFoodInADay.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
     public static void init(Context context) {
         instance = new FireBaseConnection(context);
-        UserEatenFoodInADay.init(context);
     }
 
     public void addUserFoods(MyBodyDatabase db) {

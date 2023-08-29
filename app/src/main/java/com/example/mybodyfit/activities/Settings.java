@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybody.R;
+import com.example.mybodyfit.activities.settingsActivities.History;
 import com.example.mybodyfit.activities.settingsActivities.SetGoals;
 import com.example.mybodyfit.activities.settingsActivities.SetNotifications;
 import com.example.mybodyfit.activities.settingsActivities.TrackSteps;
@@ -99,6 +100,10 @@ public class Settings extends AppCompatActivity {
                 Intent intent = new Intent(Settings.this, TrackSteps.class);
                 startActivity(intent);
             }
+            if (settable.get(position).getType().equals("History")) {
+                Intent intent = new Intent(Settings.this, History.class);
+                startActivity(intent);
+            }
         }));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -111,6 +116,7 @@ public class Settings extends AppCompatActivity {
         settable.add(new SettingsAttributes("Set Goals", R.drawable.baseline_flag_24));
         settable.add(new SettingsAttributes("Profile", R.drawable.baseline_person_pin_24));
         settable.add(new SettingsAttributes("Track steps", null));
+        settable.add(new SettingsAttributes("History", null));
         settable.add(new SettingsAttributes("Log Out", R.drawable.baseline_logout_24));
     }
 

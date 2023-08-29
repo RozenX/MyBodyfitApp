@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.MyBodyDatabase;
-import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
@@ -74,7 +71,9 @@ public class Log extends AppCompatActivity {
         caloricGoal = findViewById(R.id.caloric_goal);
         viewModel = new ViewModelProvider(this).get(FoodViewModel.class);
 
-        FirebaseDatabase.getInstance().getReference().child("settings").child(UserName.getName(FirebaseAuth.getInstance().getCurrentUser().getEmail())).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("settings").child(UserName
+                .getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 preference = snapshot.getValue(PersonalPreference.class);

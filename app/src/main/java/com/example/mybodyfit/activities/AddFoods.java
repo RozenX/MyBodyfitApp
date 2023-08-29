@@ -12,7 +12,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
-import com.example.mybodyfit.dataBase.DataBaseHelper;
+import com.example.mybodyfit.dataBase.MyBodyDatabase;
+import com.example.mybodyfit.dataBase.dao.FoodDao;
+import com.example.mybodyfit.dataBase.entities.Foods;
+import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
 import com.example.mybodyfit.struct.MenuThread;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -26,7 +29,7 @@ public class AddFoods extends AppCompatActivity {
     private BottomNavigationView bnv;
     private FloatingActionButton fab;
     private EditText foodName, calories, protein, carbs, fats;
-    private DataBaseHelper dataBaseHelper;
+    private FoodDao database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,7 @@ public class AddFoods extends AppCompatActivity {
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
         Objects.requireNonNull(getSupportActionBar()).hide();
         addButton = findViewById(R.id.add_btn);
-        addButton.setBackgroundColor(Color.parseColor("#D69E10"));
+        database = MyBodyDatabase.getInstance(this).foodDao();
         try {
             addButton.setOnClickListener(v -> addNewFood());
         } catch (Exception e) {
@@ -52,19 +55,21 @@ public class AddFoods extends AppCompatActivity {
 
         MenuThread.init(this::manageNavigation);
         MenuThread.getInstance().start();
-        DataBaseHelper.init(AddFoods.this);
-        dataBaseHelper = DataBaseHelper.getInstance();
     }
 
     public void addNewFood() {
         try {
-            boolean successes = dataBaseHelper.addFood(new FoodModel(
-                    foodName.getText().toString(),
-                    Integer.parseInt(calories.getText().toString()),
-                    Integer.parseInt(protein.getText().toString()),
-                    Integer.parseInt(carbs.getText().toString()),
-                    Integer.parseInt(fats.getText().toString()), 0));
-            Toast.makeText(this, "successes = " + successes, Toast.LENGTH_SHORT).show();
+            Runnable runnable = () -> {
+                database.insert(new Foods(foodName.getText().toString() + "-quick add",
+                        Integer.parseInt(calories.getText().toString()),
+                        Integer.parseInt(protein.getText().toString()),
+                        Integer.parseInt(carbs.getText().toString()),
+                        Integer.parseInt(fats.getText().toString()),
+                        FoodModel.SNACK,
+                        999, CurrentDate.getDateWithoutTimeUsingCalendar()));
+            };
+            new Thread(runnable).start();
+            Toast.makeText(this, "food was added", Toast.LENGTH_SHORT).show();
             goToHome();
         } catch (Exception e) {
             Toast.makeText(this, "something went wrong", Toast.LENGTH_SHORT).show();

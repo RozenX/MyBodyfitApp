@@ -109,21 +109,6 @@
             app:layout_constraintTop_toTopOf="@+id/imageView9"
             app:layout_constraintVertical_bias="0.193" />
 
-        <Button
-            android:id="@+id/add_btn"
-            android:layout_width="106dp"
-            android:layout_height="91dp"
-            android:layout_marginStart="4dp"
-            android:background="@drawable/ripple_effect"
-            android:elevation="10dp"
-            android:text="Add"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.847"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView9"
-            app:layout_constraintVertical_bias="0.796" />
-
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="400dp"
             android:layout_height="116dp"
@@ -149,8 +134,8 @@
                     android:background="@drawable/transperent_background"
                     app:itemIconTint="@color/white"
                     app:itemTextColor="@color/white"
-                    app:menu="@menu/buttom_menu"
-                    app:labelVisibilityMode="labeled"  />
+                    app:labelVisibilityMode="labeled"
+                    app:menu="@menu/buttom_menu" />
 
             </com.google.android.material.bottomappbar.BottomAppBar>
 
@@ -161,7 +146,35 @@
                 android:src="@drawable/ic_baseline_add_24"
                 app:backgroundTint="@android:color/darker_gray"
                 app:layout_anchor="@id/bottomAppBar" />
+
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <LinearLayout
+            android:elevation="10dp"
+            android:layout_width="105dp"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.885"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView13"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/add_btn"
+                android:layout_width="105dp"
+                android:layout_height="90dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/add_btn_rounded_corners"
+                android:elevation="10dp"
+                android:foreground="@drawable/ripple_effect"
+                android:text="Add"
+                android:textAllCaps="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.885"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView13" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/imageView13"
@@ -175,6 +188,7 @@
             app:layout_constraintTop_toTopOf="@+id/imageView9"
             app:layout_constraintVertical_bias="0.185"
             app:srcCompat="@drawable/food_icon" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

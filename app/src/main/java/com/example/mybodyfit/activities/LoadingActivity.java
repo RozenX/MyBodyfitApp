@@ -12,8 +12,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybody.R;
-import com.example.mybodyfit.dataBase.MyBodyDatabase;
-import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.example.mybodyfit.struct.NutrientsEatenToday;
 import com.google.firebase.auth.FirebaseAuth;

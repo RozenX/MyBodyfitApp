@@ -194,7 +194,7 @@ public class SetGoals extends AppCompatActivity {
                     preference.fatGoal = Integer.parseInt(fatsGrams.getText().toString());
                     FirebaseDatabase.getInstance().getReference().child("settings")
                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
+                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                         dataSnapshot.getRef().setValue(preference);

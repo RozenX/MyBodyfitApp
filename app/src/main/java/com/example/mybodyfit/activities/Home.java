@@ -9,6 +9,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -18,12 +19,10 @@ import androidx.core.widget.NestedScrollView;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.MyBodyDatabase;
-import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
 import com.example.mybodyfit.struct.MenuThread;
-import com.example.mybodyfit.struct.NutrientsEatenToday;
 import com.example.mybodyfit.struct.PersonalPreference;
 import com.example.mybodyfit.struct.UserName;
 import com.github.mikephil.charting.charts.LineChart;
@@ -53,6 +52,7 @@ public class Home extends AppCompatActivity {
     private ProgressBar proteinBar;
     private ProgressBar carbsBar;
     private ProgressBar fatsBar;
+    private ProgressBar accuracy;
     int calories;
     int protein;
     int carbs;
@@ -64,7 +64,6 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
-        UserEatenFoodInADay.init(getApplicationContext());
         scrollView = findViewById(R.id.scrollView);
         bnv = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
@@ -79,7 +78,9 @@ public class Home extends AppCompatActivity {
 
         fatsBar = findViewById(R.id.pb_fats);
         fatsBar.getProgressDrawable().setColorFilter((Color.parseColor("#D69E10")), android.graphics.PorterDuff.Mode.SRC_IN);
-
+        accuracy = findViewById(R.id.accuracy);
+        TextView accuracyTxt = findViewById(R.id.accuracyText);
+        getFoodEatenToday();
 //        PersonalPreference personalPreference = new PersonalPreference();
 //        personalPreference.setDefaultSettings();
 //
@@ -90,11 +91,18 @@ public class Home extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         preference = snapshot.getValue(PersonalPreference.class);
-                        getFoodEatenToday();
-                        caloriesBar.setProgress((int) (100 * ((double) calories / preference.caloricGoal)));
-                        proteinBar.setProgress((int) (100 * ((double) protein / preference.proteinGoal)));
-                        carbsBar.setProgress((int) (100 * ((double) carbs / preference.carbGoal)));
-                        fatsBar.setProgress((int) (100 * ((double) fats / preference.fatGoal)));
+                        runOnUiThread(() -> new Handler().post(() -> {
+                            caloriesBar.setProgress((int) (100 * ((double) calories / preference.caloricGoal)));
+                            proteinBar.setProgress((int) (100 * ((double) protein / preference.proteinGoal)));
+                            carbsBar.setProgress((int) (100 * ((double) carbs / preference.carbGoal)));
+                            fatsBar.setProgress((int) (100 * ((double) fats / preference.fatGoal)));
+                            calculateAccuracy();
+                            accuracyTxt.setText(accuracy.getProgress() + "%");
+
+                            if (caloriesBar.getProgress() == 0 && calories != 0) {
+                                recreate();
+                            }
+                        }));
                     }
 
                     @Override
@@ -102,15 +110,6 @@ public class Home extends AppCompatActivity {
 
                     }
                 });
-
-
-
-        ProgressBar accuracy = findViewById(R.id.accuracy);
-        accuracy.setProgress(60);
-
-        TextView accuracyTxt = findViewById(R.id.accuracyText);
-        accuracyTxt.setText(accuracy.getProgress() + "%");
-
 
         graphJourney();
         MenuThread.init(this::manageNavigation);
@@ -240,5 +239,14 @@ public class Home extends AppCompatActivity {
             }
         };
         new Thread(runnable).start();
+    }
+
+    public void calculateAccuracy() {
+        int caloriesPer = caloriesBar.getProgress();
+        int proteinPer = proteinBar.getProgress();
+        int carbsPer = carbsBar.getProgress();
+        int fatsPer = fatsBar.getProgress();
+
+        accuracy.setProgress((caloriesPer + proteinPer + carbsPer + fatsPer) / 4);
     }
 }

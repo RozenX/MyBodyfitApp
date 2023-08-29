@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -25,14 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.constants.AppConstants;
-import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
 import com.example.mybodyfit.spoonacular.RequestManger;
 import com.example.mybodyfit.struct.CurrentDate;
 import com.example.mybodyfit.struct.FoodModel;
-import com.example.mybodyfit.struct.FoodViewAttributes;
 import com.example.mybodyfit.struct.Listeners.FoodNameResponseListener;
 import com.example.mybodyfit.struct.Listeners.FoodNutrientsResponseListener;
 import com.example.mybodyfit.struct.MenuThread;
@@ -47,7 +44,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class ViewFoodEatenByTime extends AppCompatActivity {

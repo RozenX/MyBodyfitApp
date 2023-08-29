@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mybody.R;
 import com.example.mybodyfit.dataBase.MyBodyDatabase;
-import com.example.mybodyfit.dataBase.UserEatenFoodInADay;
 import com.example.mybodyfit.dataBase.entities.Foods;
 import com.example.mybodyfit.dataBase.firebase.FireBaseConnection;
 import com.example.mybodyfit.dataBase.viewModels.FoodViewModel;
@@ -70,6 +68,9 @@ public class ViewFoodStats extends AppCompatActivity {
         foodName.setText(getIntent().getStringExtra("name"));
         pop.setOnClickListener(this::showPopUp);
         viewModel = new ViewModelProvider(this).get(FoodViewModel.class);
+        if (getIntent().getStringExtra("act") != null) {
+            amount.setVisibility(View.GONE);
+        }
         setStats();
         addFoodsToUser();
         MenuThread.init(this::manageNavigation);
