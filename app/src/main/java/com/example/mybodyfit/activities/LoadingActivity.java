@@ -24,9 +24,12 @@ public class LoadingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startActivity(new Intent(this, Home.class));
         setContentView(R.layout.activity_loading);
+
         Intent intent;
         FireBaseConnection.init(this);
+//        FirebaseAuth.getInstance().signOut();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             NutrientsEatenToday.rest();
             intent = new Intent(this, Home.class);

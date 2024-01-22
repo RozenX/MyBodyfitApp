@@ -11,9 +11,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recipes_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="601dp"
+        android:layout_height="625dp"
         android:layout_margin="4dp" />
-
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="116dp"
@@ -52,4 +54,5 @@
             app:backgroundTint="@android:color/darker_gray"
             app:layout_anchor="@id/bottomAppBar" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

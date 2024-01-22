@@ -27,8 +27,15 @@
         android:theme="@style/Theme.MyBody"
         tools:targetApi="31">
         <activity
-            android:name="com.example.mybodyfit.activities.settingsActivities.History"
+            android:name="com.example.mybodyfit.activities.RestPassword"
             android:exported="false" />
+
+        <receiver android:name="com.example.mybodyfit.struct.channel.MyNotificationReceiver" />
+
+        <activity
+            android:name="com.example.mybodyfit.activities.settingsActivities.History"
+            android:exported="false"
+            android:parentActivityName="com.example.mybodyfit.activities.Settings" />
         <activity
             android:name="com.example.mybodyfit.activities.Instructions"
             android:exported="false"

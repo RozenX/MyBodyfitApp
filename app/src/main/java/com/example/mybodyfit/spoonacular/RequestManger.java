@@ -12,6 +12,9 @@ import com.example.mybodyfit.struct.models.nutrients.FoodNutrientsApiResponseSP;
 import com.example.mybodyfit.struct.models.randomRecipes.RandomRecipeApiResponse;
 import com.example.mybodyfit.struct.models.searchFood.SearchFoodApiResponse;
 
+import java.net.HttpURLConnection;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

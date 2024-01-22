@@ -39,7 +39,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Home extends AppCompatActivity {
@@ -53,6 +56,9 @@ public class Home extends AppCompatActivity {
     private ProgressBar carbsBar;
     private ProgressBar fatsBar;
     private ProgressBar accuracy;
+    private TextView currentStreak;
+    private TextView bestStreak;
+    private TextView totalLogs;
     int calories;
     int protein;
     int carbs;
@@ -98,10 +104,49 @@ public class Home extends AppCompatActivity {
                             fatsBar.setProgress((int) (100 * ((double) fats / preference.fatGoal)));
                             calculateAccuracy();
                             accuracyTxt.setText(accuracy.getProgress() + "%");
-
+                            List<Foods> logs = new ArrayList<>();
                             if (caloriesBar.getProgress() == 0 && calories != 0) {
                                 recreate();
                             }
+                            if (!preference.currentDate.equals(CurrentDate.getDateWithoutTimeUsingCalendar())) {
+                                Runnable runnable = () -> {
+                                    List<Foods> breakfast = new ArrayList<>(MyBodyDatabase
+                                            .getInstance(Home.this).foodDao().pullByMealAndDateData(FoodModel.BREAKFAST, preference.currentDate));
+                                    List<Foods> lunch = new ArrayList<>(MyBodyDatabase
+                                            .getInstance(Home.this).foodDao().pullByMealAndDateData(FoodModel.LUNCH, preference.currentDate));
+                                    List<Foods> dinner = new ArrayList<>(MyBodyDatabase
+                                            .getInstance(Home.this).foodDao().pullByMealAndDateData(FoodModel.DINNER, preference.currentDate));
+                                    List<Foods> snacks = new ArrayList<>(MyBodyDatabase
+                                            .getInstance(Home.this).foodDao().pullByMealAndDateData(FoodModel.SNACK, preference.currentDate));
+
+                                    logs.addAll(breakfast);
+                                    logs.addAll(lunch);
+                                    logs.addAll(dinner);
+                                    logs.addAll(snacks);
+                                    if (!logs.isEmpty()) {
+                                        preference.currentLogStreak++;
+                                        preference.totalLogs++;
+                                    } else {
+                                        preference.currentLogStreak = 0;
+                                    }
+                                    if (preference.currentLogStreak >= preference.bestLogSteak) {
+                                        preference.bestLogSteak = preference.currentLogStreak;
+                                    }
+
+                                };
+                                new Thread(runnable).start();
+                            }
+                            currentStreak = findViewById(R.id.current_streak);
+                            currentStreak.setText(Integer.toString(preference.currentLogStreak));
+                            bestStreak = findViewById(R.id.best_streak);
+                            bestStreak.setText(Integer.toString(preference.bestLogSteak));
+                            totalLogs = findViewById(R.id.total_logs);
+                            totalLogs.setText(Integer.toString(preference.totalLogs));
+
+                            preference.currentDate = CurrentDate.getDateWithoutTimeUsingCalendar();
+                            FirebaseDatabase.getInstance().getReference().child("settings")
+                                    .child(UserName.getName(FirebaseAuth.getInstance()
+                                            .getCurrentUser().getEmail())).setValue(preference);
                         }));
                     }
 
@@ -150,7 +195,6 @@ public class Home extends AppCompatActivity {
         lineChart.setBorderColor(Color.WHITE);
         lineChart.setNoDataTextColor(Color.WHITE);
         lineChart.setGridBackgroundColor(Color.WHITE);
-        manageNavigation();
     }
 
 

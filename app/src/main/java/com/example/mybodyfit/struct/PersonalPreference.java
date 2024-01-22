@@ -8,10 +8,12 @@ public class PersonalPreference {
     public String dinnerNotification;
     public int currentLogStreak;
     public int bestLogSteak;
+    public int totalLogs;
     public int caloricGoal;
     public int proteinGoal;
     public int carbGoal;
     public int fatGoal;
+    public String currentDate;
 
     public void setDefaultSettings() {
         isToNotifications = true;
@@ -20,9 +22,11 @@ public class PersonalPreference {
         dinnerNotification = "20:00";
         currentLogStreak = 0;
         bestLogSteak = 0;
+        totalLogs = 0;
         caloricGoal = 2000;
         proteinGoal = 150;
         carbGoal = 200;
         fatGoal = 67;
+        currentDate = CurrentDate.getDateWithoutTimeUsingCalendar();
     }
 }

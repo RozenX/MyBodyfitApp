@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -25,6 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class History extends AppCompatActivity {
 
@@ -37,16 +39,14 @@ public class History extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        bnv = findViewById(R.id.bottomNavigationView);
-        fab = findViewById(R.id.fab);
+        getWindow().getDecorView().setBackgroundColor(Color.parseColor("#121212"));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         recyclerView = findViewById(R.id.history);
         Runnable runnable = () -> {
             foods = new ArrayList<>(MyBodyDatabase.getInstance(this).foodDao().pullAllData());
             setAdapter();
         };
         new Thread(runnable).start();
-        MenuThread.init(this::manageNavigation);
-        MenuThread.getInstance().start();
     }
 
     public void setAdapter() {
@@ -68,36 +68,18 @@ public class History extends AppCompatActivity {
         bundle.putString("protein", Double.toString(foods.get(pos).getProtein()));
         bundle.putString("carbs", Double.toString(foods.get(pos).getCarbs()));
         bundle.putString("fats", Double.toString(foods.get(pos).getFats()));
-        bundle.putString("act","history");
+        bundle.putString("act", "history");
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
-    @SuppressLint("NonConstantResourceId")
-    public void manageNavigation() {
-        bnv.setSelectedItemId(R.id.home);
-        fab.setOnClickListener(v -> goTo(AddFoods.class));
-        bnv.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.home:
-                    goTo(Home.class);
-                    return true;
-                case R.id.log:
-                    goTo(Log.class);
-                    return true;
-                case R.id.settings:
-                    goTo(Settings.class);
-                    return true;
-                case R.id.recipes:
-                    goTo(Recipes.class);
-                    return true;
-            }
-            return false;
-        });
+    public void goTo(Class<?> act) {
+        startActivity(new Intent(this, act));
     }
 
-    public void goTo(Class<?> act) {
-        startActivity(new Intent(this, act),
-                ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        goTo(Settings.class);
     }
 }

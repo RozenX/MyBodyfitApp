@@ -74,6 +74,7 @@ public class Log extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("settings").child(UserName
                 .getName(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
                 .addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 preference = snapshot.getValue(PersonalPreference.class);

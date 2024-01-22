@@ -43,7 +43,9 @@ public class LogIn extends AppCompatActivity {
         signIn.setOnClickListener(v -> startActivity(new Intent(LogIn.this, Register.class)));
         changePassword = findViewById(R.id.change_password);
         changePassword.setTextColor(Color.parseColor("#0f6fe3"));
-
+        changePassword.setOnClickListener(v -> {
+            startActivity(new Intent(LogIn.this, RestPassword.class));
+        });
         changePassword.animate().setDuration(500).alpha(1);
         login = findViewById(R.id.button);
         login.setOnClickListener(this::login);

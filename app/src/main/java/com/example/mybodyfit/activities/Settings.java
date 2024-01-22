@@ -86,6 +86,7 @@ public class Settings extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ProgressHelper.setDialogToSleep(true);
+                FirebaseAuth.getInstance().signOut();
                 startActivity(intent);
             }
             if (settable.get(position).getType().equals("Set Goals")) {
